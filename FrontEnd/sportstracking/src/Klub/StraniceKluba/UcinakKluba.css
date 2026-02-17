@@ -1,0 +1,377 @@
+.kmks-wrap {
+  width: 100%;
+  padding: 18px;
+}
+
+/* glavni scroll kontejner */
+.kmks-scroll {
+  max-height: 640px;
+  overflow: auto;
+  padding-right: 8px;
+}
+
+.kmks-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.kmks-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 140, 0, 0.22);
+  border-radius: 999px;
+  border: 2px solid rgba(10, 12, 16, 0.65);
+}
+.kmks-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+/* card glass */
+.kmks-card {
+  border-radius: 18px;
+  background: rgba(10, 12, 16, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.kmks-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: linear-gradient(90deg, rgba(255,140,0,0.10), rgba(0,0,0,0));
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.kmks-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: 0.6px;
+}
+
+.kmks-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.58);
+}
+
+/* select */
+.kmks-selectWrap {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+}
+
+.kmks-selectLabel {
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+}
+
+.kmks-select {
+  min-width: 240px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+  color: rgba(255,255,255,0.9);
+  border: 1px solid rgba(255,255,255,0.10);
+  outline: none;
+}
+
+.kmks-select:focus {
+  border-color: rgba(255,140,0,0.35);
+  box-shadow: 0 0 0 3px rgba(255,140,0,0.12);
+}
+
+/* matches bar */
+.kmks-matchesBar {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  gap: 10px;
+  align-items: center;
+}
+
+.kmks-arrow {
+  height: 44px;
+  width: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.35);
+  color: rgba(255,255,255,0.9);
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.kmks-arrow:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,140,0,0.25);
+  background: rgba(0,0,0,0.45);
+}
+
+.kmks-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+  transform: none;
+}
+
+/* cards track */
+.kmks-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(160px, 1fr);
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* single match card */
+.kmks-matchCard {
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 12px;
+  min-height: 84px;
+}
+
+.kmks-matchMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.kmks-pill {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.72);
+}
+
+.kmks-date {
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+}
+
+.kmks-teamRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  line-height: 1.15;
+}
+
+.kmks-team {
+  font-size: 12px;
+  color: rgba(255,255,255,0.78);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kmks-team.isMe {
+  color: rgba(255,255,255,0.92);
+  font-weight: 800;
+}
+
+.kmks-scoreBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.92);
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.kmks-colon {
+  opacity: 0.7;
+}
+
+.kmks-ghost {
+  width: 1px;
+  height: 1px;
+}
+
+/* key stats layout */
+.kmks-statsGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 14px;
+}
+
+.kmks-leftStats {
+  border-radius: 16px;
+  background: rgba(0,0,0,0.30);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 14px;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.kmks-donut {
+  width: 132px;
+  height: 132px;
+  border-radius: 999px;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+.kmks-donutInner {
+  position: absolute;
+  inset: 10px;
+  border-radius: 999px;
+  background: rgba(10, 12, 16, 0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 8px;
+}
+
+.kmks-donutNum {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.kmks-donutLab {
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.62);
+}
+
+.kmks-legend {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+}
+
+.kmks-legRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.kmks-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+.kmks-dot.dot-w { background: rgba(255, 140, 0, 0.95); }
+.kmks-dot.dot-d { background: rgba(90, 200, 250, 0.95); }
+.kmks-dot.dot-l { background: rgba(255, 80, 80, 0.95); }
+
+.kmks-legText {
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+}
+
+.kmks-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+  color: rgba(255,255,255,0.90);
+  border: 1px solid rgba(255,140,0,0.20);
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.kmks-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,140,0,0.30);
+  background: rgba(0,0,0,0.45);
+}
+
+/* right stats numbers */
+.kmks-rightStats {
+  border-radius: 16px;
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.kmks-metric {
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 12px;
+  min-height: 86px;
+}
+
+.kmks-val {
+  font-size: 18px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: 0.3px;
+}
+
+.kmks-lab {
+  margin-top: 4px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.62);
+}
+
+.kmks-sub2 {
+  margin-top: 6px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.48);
+}
+
+.kmks-cardIcon {
+  display: inline-block;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+.kmks-cardIcon.yellow { background: rgba(255, 214, 0, 0.95); }
+.kmks-cardIcon.red { background: rgba(255, 80, 80, 0.95); }
+
+/* responsive */
+@media (max-width: 1080px) {
+  .kmks-statsGrid {
+    grid-template-columns: 1fr;
+  }
+  .kmks-rightStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .kmks-select {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 560px) {
+  .kmks-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .kmks-selectWrap {
+    justify-items: start;
+  }
+  .kmks-rightStats {
+    grid-template-columns: 1fr;
+  }
+  .kmks-track {
+    grid-auto-columns: minmax(140px, 1fr);
+  }
+}

@@ -1,0 +1,118 @@
+.ik-wrap {
+  padding: 24px;
+  color: #fff;
+}
+
+/* HERO */
+.ik-hero {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(10,10,10,0.65);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.ik-avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.05);
+}
+
+.ik-avatarIcon {
+  font-size: 64px;
+  opacity: 0.7;
+}
+
+.ik-main {
+  flex: 1;
+}
+
+.ik-name {
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.ik-sub {
+  margin-top: 4px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+.ik-info {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.ik-info span {
+  display: block;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* CLUBS */
+.ik-clubs {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.ik-clubCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.ik-clubCard img {
+  width: 22px;
+  height: 22px;
+}
+
+/* STATS */
+.ik-stats {
+  margin-top: 18px;
+}
+
+.ik-season {
+  margin-bottom: 12px;
+}
+
+.ik-season select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #1b1b1b;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.ik-statsGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+
+.ik-stat {
+  padding: 20px 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  text-align: center;
+}
+
+.ik-stat strong {
+  font-size: 28px;
+  display: block;
+}
+
+.ik-stat span {
+  font-size: 12px;
+  opacity: 0.6;
+}

@@ -1,0 +1,240 @@
+:root {
+  --navbar-height: 64px;
+}
+
+.navbar {
+  position: fixed;
+  width: 100%;
+  background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  z-index: 1000;
+}
+
+/* LEFT */
+.navbar-left .logo {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+}
+
+.logo .tm {
+  font-size: 11px;
+  vertical-align: top;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+/* CENTER */
+.navbar-center {
+  list-style: none;
+  display: flex;
+  gap: 36px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  color: #cfcfcf;
+  font-size: 15px;
+  cursor: pointer;
+  position: relative;
+  padding-bottom: 6px;
+}
+
+.nav-item:hover {
+  color: white;
+}
+.icon-btn:disabled {
+  background-color: rgba(255, 255, 255, 0.04);
+  cursor: not-allowed;
+}
+
+.icon-btn:disabled svg {
+  color: rgba(255, 255, 255, 0.35);
+}
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.icon-btn:disabled:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.nav-item.active {
+  color: white;
+  font-weight: 500;
+}
+
+.nav-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #ff7a00;
+  border-radius: 2px;
+}
+
+/* RIGHT */
+.navbar-right {
+  display: flex;
+  gap: 14px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn.active {
+  color: white;
+  font-weight: 500;
+}
+
+.icon-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #ff7a00;
+  border-radius: 2px;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+.user-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* dugme oko avatara (da bude isto kao icon-btn) */
+.avatar-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.12s ease;
+}
+
+.avatar-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.avatar-btn.open {
+  background-color: rgba(255, 122, 0, 0.16);
+  box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.25);
+}
+
+/* krug sa inicijalima */
+.avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  user-select: none;
+}
+
+/* dropdown panel (kao na slici) */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 170px;
+
+  border-radius: 12px;
+  padding: 8px;
+
+  background: linear-gradient(180deg, rgba(26, 26, 26, 0.96), rgba(15, 15, 15, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+
+  z-index: 9999;
+}
+
+/* mali "arrow" iznad dropdowna */
+.dropdown::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  right: 14px;
+  width: 14px;
+  height: 14px;
+
+  background: rgba(26, 26, 26, 0.96);
+  border-left: 1px solid rgba(255, 255, 255, 0.10);
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+
+  transform: rotate(45deg);
+}
+
+/* stavke */
+.dropdown-item {
+  width: 100%;
+  text-align: left;
+
+  padding: 10px 10px;
+  border: none;
+  border-radius: 10px;
+
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+
+  cursor: pointer;
+  font-size: 14px;
+
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.08s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(255, 122, 0, 0.16);
+  color: #fff;
+}
+
+.dropdown-item:active {
+  transform: scale(0.99);
+}
+
+/* opcionalno: "Odjava" da bude malo naglašenija */
+.dropdown-item.danger:hover {
+  background-color: rgba(255, 122, 0, 0.20);
+  box-shadow: 0 0 0 1px rgba(255, 122, 0, 0.25) inset;
+}

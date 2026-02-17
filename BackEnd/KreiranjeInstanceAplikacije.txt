@@ -1,0 +1,102 @@
+# How to Run the Project with PostgreSQL & pgAdmin using Docker
+
+This guide explains how to run the backend with a PostgreSQL database inside Docker and manage it using pgAdmin.
+
+---
+
+##  Prerequisites
+
+Make sure you have installed:
+
+- Docker Desktop  
+- .NET 8 SDK  
+- Git  
+
+---
+
+## Clone the Project
+
+```bash
+git clone <YOUR_GITHUB_REPO_URL>
+cd DIPLOMKSI
+docker network create pg-net
+docker run -d --name tiks-postgres --network pg-net `
+  -e POSTGRES_USER=mojuser `
+  -e POSTGRES_PASSWORD=moja_lozinka `
+  -e POSTGRES_DB=moja_baza `
+  -p 5432:5432 postgres:16
+PostgreSQL is now available at:
+
+Host: localhost
+Port: 5432
+Database: moja_baza
+Username: mojuser
+Password: moja_lozinka
+Run pgAdmin (Optional – for database UI)
+docker run -d --name pgadmin --network pg-net `
+  -p 5050:80 `
+  -e PGADMIN_DEFAULT_EMAIL=admin@example.com `
+  -e PGADMIN_DEFAULT_PASSWORD=admin `
+  dpage/pgadmin4
+
+
+Open pgAdmin in browser:
+
+http://localhost:5050
+
+
+Login:
+
+Email: admin@example.com
+
+Password: admin
+
+➕ Add PostgreSQL Server in pgAdmin
+
+Name: Tiks PostgreSQL
+
+Host: tiks-postgres
+
+Port: 5432
+
+Database: moja_baza
+
+Username: mojuser
+
+Password: moja_lozinka
+ Save and connect.
+ Apply EF Core Migrations (Create Tables)
+
+Go to backend project:
+
+cd BackEnd
+dotnet restore
+
+
+If EF tool is missing:
+
+dotnet tool install --global dotnet-ef
+
+
+Apply migrations:
+
+dotnet ef database update
+
+
+This creates all tables and relationships in PostgreSQL.
+Run the API
+dotnet watch run
+
+
+Swagger will be available at:
+
+https://localhost:7xxx/swagger
+//KRERANJE DOCKER KONTAINER-A ZA REDIS BAZU
+docker pull redis
+docker volume create redis-podaci
+docker run --name moj-redis `
+ -p 6379:6379 `
+ -v redis-podaci:/data `
+ -d redis `
+ redis-server --save 60 1 --loglevel warning
+docker start moj-redis

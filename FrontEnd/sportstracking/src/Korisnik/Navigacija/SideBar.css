@@ -1,0 +1,84 @@
+/* ISTA TEMA KAO NAVBAR (hardkodirano) */
+.sidebar {
+  position: fixed;
+  top: 64px;                 /* visina navbar-a */
+  left: 0;
+  bottom: 0;                 /* ovo ga tera do dna */
+  width: 260px;
+
+  background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+
+  padding: 16px 14px;
+  box-sizing: border-box;
+z-index: 9999; 
+  overflow-y: auto;          /* ako ima puno stavki, skrol unutar sidebara */
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* Header */
+.sidebar-header {
+  margin-bottom: 14px;
+}
+
+.sidebar-title {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* List */
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 12px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+
+  cursor: pointer;
+  user-select: none;
+
+  background: rgba(255, 255, 255, 0.03);
+  color: #cfcfcf;
+
+  transition: all 0.18s ease;
+}
+
+.sidebar-item:hover {
+  background: rgba(255, 122, 0, 0.12);
+  color: white;
+}
+
+/* ACTIVE: narandžasto + uvećana slova */
+.sidebar-item.active {
+  background: rgba(255, 122, 0, 0.18);
+  color: #ff7a00;
+  box-shadow: 0 6px 18px rgba(255, 122, 0, 0.2);
+}
+
+.sidebar-item.active .sidebar-label {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* Icons + text */
+.sidebar-emoji {
+  width: 22px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.sidebar-label {
+  font-size: 15px;
+  font-weight: 500;
+  transition: font-size 0.18s ease;
+}

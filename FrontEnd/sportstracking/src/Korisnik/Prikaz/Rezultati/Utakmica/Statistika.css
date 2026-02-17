@@ -1,0 +1,136 @@
+.team-stats-card {
+  width: 100%;
+  max-width: 650px;
+  margin: 18px auto 0;
+  padding: 18px 20px 14px;
+
+  background: #191919;
+  border-radius: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #f1f1f1;
+}
+
+/* header */
+
+.team-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.ts-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.ts-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #e5e5e5;
+}
+
+/* telo tabele */
+
+.team-stats-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ts-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  align-items: center;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.ts-label {
+  text-align: center;
+  color: #dddddd;
+}
+
+.ts-value {
+  display: flex;
+  align-items: center;
+}
+
+.ts-value-left {
+  justify-content: flex-start;
+}
+
+.ts-value-right {
+  justify-content: flex-end;
+}
+
+/* crvene "pilule" sa brojevima */
+
+.ts-pill-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 28px;
+  padding: 4px 10px;
+
+  border-radius: 999px;
+  background: #e50914;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+.ts-pill-less {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 28px;
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* venue / mesto */
+
+.team-stats-venue {
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+.venue-label {
+  color: #9fe46b;
+  font-weight: 600;
+}
+
+.venue-text {
+  color: #f3f3f3;
+}
+
+/* malo responsivnosti */
+
+@media (max-width: 600px) {
+  .team-stats-card {
+    padding: 14px 12px 10px;
+  }
+
+  .ts-row {
+    font-size: 12px;
+    grid-template-columns: 0.9fr 1.6fr 0.9fr;
+  }
+
+  .ts-pill {
+    min-width: 24px;
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+}

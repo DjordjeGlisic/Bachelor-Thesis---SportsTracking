@@ -1,0 +1,303 @@
+.tabela-wrapper {
+  width: 100%;                /* zauzmi celu širinu modala */
+  max-width: 1000px;          /* po želji limit da ne ode preširoko */
+  margin: 0 auto;             /* centriranje unutar modala */
+  background: transparent;
+  color: #e5e7eb;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.tabela-card {
+  width: 100%;                /* rastegni sam “card” preko cele širine */
+  background: radial-gradient(circle at top left, #1f2937, #020617);
+  border-radius: 18px;
+  padding: 12px 12px 8px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.tabela-season-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.tabela-season-label {
+  opacity: 0.8;
+}
+
+.tabela-season-value {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #111827;
+  color: #f9fafb;
+  font-weight: 500;
+  border: 1px solid #1f2937;
+}
+
+.season-arrow {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.tabela-card {
+  background: radial-gradient(circle at top left, #1f2937, #020617);
+  border-radius: 18px;
+  padding: 12px 12px 8px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.tabela-header-row {
+  display: grid;
+  grid-template-columns: 30px 1.7fr repeat(7, 40px) 50px 110px;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.8);
+}
+
+.tabela-body {
+  max-height: 420px;              /* skrol po redovima */
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+/* custom scrollbar */
+.tabela-body::-webkit-scrollbar {
+  width: 6px;
+}
+.tabela-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tabela-body::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 999px;
+}
+
+.tabela-row {
+  display: grid;
+  grid-template-columns: 30px 1.7fr repeat(7, 40px) 50px 110px;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.tabela-row:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.tabela-row:nth-child(even) {
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.tabela-row:hover {
+  background: rgba(55, 65, 81, 0.8);
+  transform: translateY(-1px);
+}
+
+.col-pos {
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+.tabela-season-select {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #111827;
+  color: #f9fafb;
+  border: 1px solid #1f2937;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.tabela-season-select:hover {
+  border-color: #374151;
+}
+
+.tabela-season-bar select {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+}
+
+.col-club {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.club-logo-circle {
+  width: 18px;                /* manji krug */
+  height: 18px;
+  border-radius: 999px;
+  background: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;           /* da slika ne štrči */
+}
+
+.club-logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;        /* cela slika se vidi u krugu */
+  display: block;
+}
+
+
+.club-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-num {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+}
+
+.col-pts {
+  font-weight: 600;
+  color: #bbf7d0;
+}
+
+.col-form {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-start;
+}
+
+.form-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+.form-win {
+  background: #22c55e;
+}
+
+.form-draw {
+  background: #6b7280;
+}
+
+.form-loss {
+  background: #ef4444;
+}
+/* Za tabelu igrača – 7 kolona */
+.tabela-indeks .tabela-header-row,
+.tabela-indeks .tabela-row {
+  display: grid;
+  grid-template-columns:
+    40px      /* # */
+    2fr       /* Igrac */
+    2fr       /* Klub */
+    80px      /* Odigrane */
+    110px     /* Pas Indeks */
+    110px     /* Sut Indeks */
+    120px;    /* Ukupan Indeks */
+  align-items: center;
+}
+
+/* Po želji malo uredi tekst */
+.tabela-indeks .tabela-header-row {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tabela-indeks .col-num {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.tabela-indeks .tabela-header-row .col-num:nth-child(2),
+.tabela-indeks .tabela-header-row .col-num:nth-child(3) {
+  text-align: left; /* Igrac, Klub malo ulevo */
+}
+.tabela-indeks .tabela-row .col-num:nth-child(2),
+.tabela-indeks .tabela-row .col-num:nth-child(3) {
+  text-align: left;
+}
+/* Header za indeks igrača */
+.tabela-header-indeks {
+  display: grid;
+  grid-template-columns: 0.4fr 1.5fr 1.5fr 0.8fr 1.1fr 1.1fr 1.2fr; /* raspodela po širini */
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.8);
+}
+
+/* Redovi sa podacima da prate isti raspored */
+.tabela-row-indeks {
+  display: grid;
+grid-template-columns:
+    0.3fr   /* # */
+    1.2fr   /* Igrač */
+    1.2fr   /* Klub */
+    0.7fr   /* Odigrane */
+    0.9fr   /* Pas indeks */
+    0.9fr   /* Šut indeks */
+    1fr;    /* Fair-play indeks */
+  gap: 2px; /* smanji razmak između kolona */
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* Poravnanje teksta u ćelijama */
+.tabela-header-indeks .col-num,
+.tabela-row-indeks .col-num {
+  text-align: center;
+}
+.search-input {
+  background: #0b1220;          /* tamna pozadina kao select */
+  color: #ffffff;               /* bela slova */
+  border: 1px solid #1f2937;    /* blaga ivica */
+  border-radius: 999px;         /* full pill */
+  padding: 6px 14px;
+  font-size: 14px;
+  outline: none;
+  min-width: 110px;
+
+  /* uklanja default browser stil */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* placeholder stil kao u selectu */
+.search-input::placeholder {
+  color: #cbd5e1;
+  opacity: 0.8;
+}
+
+/* hover efekat */
+.search-input:hover {
+  border-color: #2d3b4f;
+}
+
+/* fokus efekat (kao kod izabranog selecta) */
+.search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}

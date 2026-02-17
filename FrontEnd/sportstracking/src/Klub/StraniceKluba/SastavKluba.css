@@ -1,0 +1,225 @@
+.sk-wrap {
+  width: 100%;
+  padding: 18px 18px 22px;
+}
+
+/* Glass panel u tvom fazonu */
+.sk-card {
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(10, 12, 16, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+}
+
+.sk-top {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(255, 140, 0, 0.12), rgba(0, 0, 0, 0));
+}
+
+.sk-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.sk-subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.sk-scroll {
+  max-height: 560px;
+  overflow: auto;
+  padding: 14px 14px 18px;
+}
+
+/* Scrollbar */
+.sk-scroll::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+.sk-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 140, 0, 0.22);
+  border-radius: 999px;
+  border: 2px solid rgba(10, 12, 16, 0.55);
+}
+.sk-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+/* Sekcija */
+.sk-section {
+  margin-bottom: 16px;
+}
+
+.sk-sectionTitle {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 6px 2px 10px;
+}
+
+/* Header sa 8 kolona */
+.sk-headRow {
+  display: grid;
+  grid-template-columns: 1.6fr 0.85fr 0.5fr 0.6fr 0.6fr 0.9fr 0.9fr 0.6fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sk-headCell {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sk-headPlayer {
+  text-align: left;
+  padding-left: 4px;
+}
+
+/* Lista redova */
+.sk-rows {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Red sa 8 kolona */
+.sk-row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.85fr 0.5fr 0.6fr 0.6fr 0.9fr 0.9fr 0.6fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.sk-row:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 140, 0, 0.25);
+  background: #ff7a00;
+  cursor:pointer;
+
+}
+
+.sk-cell {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sk-center {
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.sk-stat {
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Igrač cell */
+.sk-player {
+  gap: 10px;
+}
+
+.sk-iconWrap {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  flex: 0 0 auto;
+}
+
+.sk-icon {
+  width: 18px;
+  height: 18px;
+  fill: rgba(255, 255, 255, 0.72);
+}
+
+.sk-nameWrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  min-width: 0;
+}
+
+.sk-name {
+  font-weight: 800;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.sk-sub {
+  margin-top: 3px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.sk-empty {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+/* Responsive: na manjim širinama sakrivamo "teže" kolone */
+@media (max-width: 1100px) {
+  .sk-headRow,
+  .sk-row {
+    grid-template-columns: 1.6fr 0.85fr 0.5fr 0.6fr 0.6fr 0.7fr;
+  }
+
+  /* sakrij datum potpisa + datum isteka */
+  .sk-headRow .sk-headCell:nth-child(6),
+  .sk-headRow .sk-headCell:nth-child(7),
+  .sk-row .sk-cell:nth-child(6),
+  .sk-row .sk-cell:nth-child(7) {
+    display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .sk-headRow,
+  .sk-row {
+    grid-template-columns: 1.6fr 0.85fr 0.6fr 0.6fr;
+  }
+
+  /* sakrij godine + ugovore + stat */
+  .sk-headRow .sk-headCell:nth-child(3),
+  .sk-headRow .sk-headCell:nth-child(6),
+  .sk-headRow .sk-headCell:nth-child(7),
+  .sk-headRow .sk-headCell:nth-child(8),
+  .sk-row .sk-cell:nth-child(3),
+  .sk-row .sk-cell:nth-child(6),
+  .sk-row .sk-cell:nth-child(7),
+  .sk-row .sk-cell:nth-child(8) {
+    display: none;
+  }
+}

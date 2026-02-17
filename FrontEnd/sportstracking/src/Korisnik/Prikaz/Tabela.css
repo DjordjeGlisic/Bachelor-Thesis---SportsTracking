@@ -1,0 +1,98 @@
+/* Tabela.css */
+
+.et-wrapper {
+  width: 100%;
+  max-width: 1040px;
+  height: 440px;
+  margin: 0 auto;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* skrol ide unutar .et-scroll */
+}
+
+/* gornja traka sa naslovom */
+.et-header-bar {
+  padding: 10px 18px 4px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.et-title {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+}
+
+/* deo koji obezbeđuje vertikalni i horizontalni skrol */
+.et-scroll {
+  flex: 1;
+  overflow: auto;
+}
+
+/* tabela se širi koliko joj traže kolone */
+.et-table {
+  width: max-content; /* širina = zbir kolona */
+  min-width: 100%;    /* ali najmanje širina wrapper-a */
+}
+
+/* red – kolone stižu iz inline style-a (gridTemplateColumns) */
+.et-row {
+  display: grid;
+  column-gap: 24px;
+  align-items: center;
+  padding: 10px 18px;
+  font-size: 13px;
+  border-top: 1px solid rgba(31, 41, 55, 0.85);
+}
+
+/* header */
+.et-row-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: linear-gradient(to right, #020617, #111827);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9ca3af;
+  border-top: none;
+}
+
+/* ćelija */
+.et-col {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.et-center {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* zebra + hover */
+.et-row:not(.et-row-head):nth-child(odd) {
+  background: rgba(15, 23, 42, 0.70);
+}
+
+.et-row:not(.et-row-head):nth-child(even) {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.et-row:not(.et-row-head):hover {
+  background: rgba(55, 65, 81, 0.85);
+}
+
+/* skrolbar */
+.et-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.et-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.et-scroll::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 999px;
+}
