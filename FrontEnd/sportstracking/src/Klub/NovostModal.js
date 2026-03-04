@@ -31,12 +31,13 @@ export default function NovostModal(props) {
         sx={{
           position: "fixed",
           inset: 0,
-          backgroundColor: "rgba(0,0,0,0.55)",
+          backgroundColor: "rgba(0,0,0,0.75)", 
           backdropFilter: "blur(8px)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           p: 2,
+          zIndex: 1300,
         }}
       >
         <Paper
@@ -44,40 +45,45 @@ export default function NovostModal(props) {
           onClick={(e) => e.stopPropagation()}
           sx={{
             position: "relative",
-            borderRadius: 3,
-            background: "rgba(0,0,0,0.20)",
+            borderRadius: "24px",
+            background: "rgba(18, 18, 18, 0.9)", 
             width: "min(980px, 95vw)",
-            maxWidth: "95vw",
             height: "min(92vh, 900px)",
             maxHeight: "92vh",
-            overflow: "hidden",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255,255,255,0.10)",
+            overflow: "hidden", // Sprečava dupli skrol na samom Paper-u
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          {/* X */}
+          {/* Dugme za zatvaranje (X) */}
           <IconButton
             onClick={props.onClose}
             aria-label="close"
             sx={{
               position: "absolute",
-              top: 10,
-              left: 10,
-              zIndex: 50,
-              color: "rgba(255,255,255,0.9)",
-              backgroundColor: "rgba(255,255,255,0.08)",
-              "&:hover": { backgroundColor: "rgba(255,255,255,0.14)" },
+              top: 15,
+              left: 15,
+              zIndex: 110,
+              color: "rgba(255,255,255,0.8)",
+              backgroundColor: "rgba(255,255,255,0.06)",
+              "&:hover": { 
+                backgroundColor: "rgba(255,121,0,0.2)", 
+                color: "#ff7900",
+                transform: "rotate(90deg)"
+              },
+              transition: "all 0.3s ease",
             }}
           >
             <CloseIcon />
           </IconButton>
 
-          {/* HEADER (ne skroluje) */}
+          {/* FIKSNI HEADER (Ne mrda se prilikom skrolovanja vesti) */}
           <div className="nm-head">
             <div className="nm-headLeft">
-              <div className="nm-clubBadge" aria-hidden="true">
-                {/* ako imaš props.clubLogo možeš umesto n.slika ili dodaj posebno */}
-                <img src={props.clubLogo} alt="" />
+              <div className="nm-clubBadge">
+                <img src={props.clubLogo} alt={props.clubNaziv} />
               </div>
 
               <div className="nm-headText">
@@ -95,7 +101,7 @@ export default function NovostModal(props) {
             </div>
           </div>
 
-          {/* CONTENT (skroluje) */}
+          {/* SKROLABILNI SADRŽAJ (Ovde se nalazi cela vest) */}
           <div className="nm-body">
             {!n ? (
               <div className="nm-empty">Nema podataka o vesti.</div>
@@ -105,26 +111,58 @@ export default function NovostModal(props) {
                 <h1 className="nm-title">{props.novost.naslov}</h1>
 
                 {/* SAZETAK */}
-                {n.sazetak ? <p className="nm-summary">{props.novost.sazetak}</p> : null}
+                {n.sazetak && <div>
+                  
+                   
+                     {( props.novost.sazetak ?? "")
+                  .split("\n")
+                  .filter((x) => x.trim().length)
+                  .map((p, i) => (
+                    <p 
+                      key={i} 
+                     className="nm-summary"
+                      style={{ 
+                        wordBreak: 'break-all',    // Force prelamanje bilo gde
+                        overflowWrap: 'anywhere',  // Dodatna podrška za dugačke stringove
+                        whiteSpace: 'pre-wrap'     // Čuva formatiranje teksta
+                      }}
+                    >
+                      {p}
+                    </p>
+                  ))}
+                      
+                    
+                    
+                    
+                  
+                  </div>}
 
-                {/* GLAVNA SLIKA */}
-                {n.slika ? (
+                {/* SLIKA VESTI */}
+                {n.slika && (
                   <div className="nm-heroWrap">
                     <img className="nm-hero" src={props.novost.slika} alt={props.novost.naslov} />
                   </div>
-                ) : null}
+                )}
 
-                {/* TEKST */}
-                <div className="nm-article">
-                  {(props.novost.vest ?? "")
-                    .split("\n")
-                    .filter((x) => x.trim().length)
-                    .map((p, i) => (
-                      <p key={i} className="nm-par">
-                        {p}
-                      </p>
-                    ))}
-                </div>
+                {/* TEKST ARTIKLA (Sada bez ograničenja visine, raste unutar nm-body) */}
+              <div className="nm-article">
+                {(props.novost.vest ?? "")
+                  .split("\n")
+                  .filter((x) => x.trim().length)
+                  .map((p, i) => (
+                    <p 
+                      key={i} 
+                      className="nm-par" 
+                      style={{ 
+                        wordBreak: 'break-all',    // Force prelamanje bilo gde
+                        overflowWrap: 'anywhere',  // Dodatna podrška za dugačke stringove
+                        whiteSpace: 'pre-wrap'     // Čuva formatiranje teksta
+                      }}
+                    >
+                      {p}
+                    </p>
+                  ))}
+              </div>
 
                
               </>

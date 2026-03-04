@@ -12,6 +12,7 @@ import Inbox from './Inbox/Inbox';
 import GlavniPrikaz from './Korisnik/Prikaz/Novosti/GlavniPrikaz';
 import HeaderKluba from './Klub/HeaderKluba';
 
+
 function App() {
    const [background, setBackground] = useState("#1E1E1E");
    const [letters, setLetters] = useState("#E4E6EA");
@@ -28,6 +29,9 @@ function App() {
   useEffect(() => {
         // Ova linija se izvršava SVAKI PUT kada se 'background' promeni.
         // Sada pouzdano koristite najnoviju vrednost stanja.
+        let klb=localStorage.getItem("klub");
+        if(klb)
+          setKlub(JSON.parse(klb));
         let body=document.querySelector("body");
         body.style.backgroundColor = background;
         body.style.color = letters;
@@ -57,7 +61,7 @@ const [modal,setModal]=useState(false);
 
           }}>
     <div className="App" ref={focusBackRef} tabIndex={-1}>
-     {klub===null&&( 
+     { klub===null  &&( 
        <Navbar onOpenLogin={open}/>)}
 
         <Routes>
@@ -79,13 +83,12 @@ const [modal,setModal]=useState(false);
       )}
           <Route path='/' element={
             <>
-           {klub!==null?<HeaderKluba/>:<GlavniPrikaz/>}
+           { klub!==null ? <HeaderKluba/> : <GlavniPrikaz/>}
         </>} />
         <Route path='/Klub' element={
             <>
            <HeaderKluba/>
         </>} />
-      
                 
         </Routes>
     </div>

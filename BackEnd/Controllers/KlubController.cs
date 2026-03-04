@@ -141,5 +141,111 @@ namespace Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("KlubDodajeNovost/{klubID}")]
+        public async Task<IActionResult>  KlubDodajeNovost([FromRoute]int klubID,[FromBody]NovostZaDodavanje novost)
+        {
+            try
+            {
+               
+
+                var result= await _klubService.DodajNovuVest(klubID,novost);
+                return Ok(result);
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("KlubAzuriraNovost/{klubID}")]
+        public async Task<IActionResult> KlubAzuziraNovost([FromRoute] int klubID,[FromBody]NovostZaKorisnika novost)
+        {
+            try
+            {
+               var result= await _klubService.PromeniPostojecuVest(klubID,novost);
+               return Ok(result);
+
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete]
+        [Route("ObrisiPostojecuVest/{klubID}/{vestID}")]
+        public async Task<IActionResult> ObrisiPostojecuVestAsync([FromRoute]int klubID,[FromRoute]int vestID)
+        {
+            try
+            {
+                var result= await _klubService.ObrisiPostojecuVestAsync(klubID, vestID);
+                return Ok(result);
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost]
+        [Route("DodajIgracaKlubu/{klubID}")]
+        public async Task<IActionResult> DodajIgracaKlubu([FromRoute]int klubID,[FromBody]IgracDTO igrac)
+        {
+            try
+            {
+                var result = await _klubService.DodajIgracaTimuAsync(klubID,igrac);
+                return Ok(result);
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("AzurirajIgracaKluba/{igracID}")]
+        public async Task<IActionResult> AzurirajIgracaKluba([FromRoute]int igracID,[FromBody]SastavKluba igrac)
+        {
+            try
+            {
+                var result = await _klubService.IzmeniIgracaKlubaAsync(igracID,igrac);
+                return Ok(result);
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+         [HttpDelete]
+        [Route("ObrsisiIgraca/{klubID}/{igracID}")]
+        public async Task<IActionResult> ObrisiIgraca([FromRoute]int klubID,[FromRoute]int igracID)
+        {
+            try
+            {
+                var result = await _klubService.ObrisiPostojecegIgracaAsync(klubID,igracID);
+                return Ok(result);
+                
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("AzurirajKlub/{klubID}")]
+        public async Task<IActionResult> AzurirajKlubAsync([FromRoute]int klubID,[FromBody]KlubDTO klub)
+        {
+            try
+            {
+                var result = await _klubService.ImeniInformacijeKlubaAsync(klubID,klub);
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }        
     }
 }

@@ -3,9 +3,10 @@ import { Modal, Box, Paper, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Prijava from "./Prijava"; // putanja prilagodi
 import { useContext, useState } from "react";
-import { Context } from "../../Context/Context";
+import { Context,KluboviContext } from "../../Context/Context";
 export default function PrijavaModal({ open, onClose }) {
-  const { korisnik, setKorisnik } = useContext(Context);
+  const { korisnik, setKorisnik,setIzabraniKlub } = useContext(Context);
+  const {klub,setKlub} = useContext(KluboviContext);
   return (
     <Modal
       open={open}
@@ -54,7 +55,7 @@ export default function PrijavaModal({ open, onClose }) {
           </IconButton>
 
       
-          <Prijava onClose={onClose} korisnik={korisnik} setKorisnik={setKorisnik} />
+          <Prijava onClose={onClose} korisnik={korisnik} setKorisnik={setKorisnik} klub={klub} setKlub={setKlub} setIzabraniKlub={setIzabraniKlub} />
         </Paper>
       </Box>
     </Modal>

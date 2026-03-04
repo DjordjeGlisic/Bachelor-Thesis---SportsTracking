@@ -25,6 +25,10 @@ namespace Hubs
         {
             await Clients.All.SendAsync($"Obrisana poruka:{korisnikID}:{klubID}:{sport}",id);
         }
+        public async Task NotifySpecificUserAboutNewMessage(int ID)
+        {
+            await Clients.All.SendAsync($"Stigla nova poruka ID=${ID}");
+        }
         
     }
 }

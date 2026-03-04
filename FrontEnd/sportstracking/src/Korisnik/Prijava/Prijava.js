@@ -5,6 +5,7 @@ import Registracija from "./Registracija";
 import axios from "axios";
 
 const Prijava=(props)=>{
+      const navigate=useNavigate();
        const [open, setOpen] = useState(false);
           const[tip,setTip]=useState(null);
           const[poruka,setPoruka]=useState('');
@@ -31,7 +32,8 @@ const Prijava=(props)=>{
          event.preventDefault();
        
         const isValid = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(username);
-         if(username.trim().length<5||isValid===false)
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username);
+         if(username.trim().length<5 || ( isEmail===false && isValid===false) )
         {
             handleClick();
             setTip('error');
@@ -67,9 +69,23 @@ const Prijava=(props)=>{
           .then((response) => {
             // Obrada uspešnog odgovora
             
-            console.log(response.data);
-            props.setKorisnik(response.data);
-            localStorage.setItem("korisnik", JSON.stringify(response.data));
+              console.log(response.data);
+              if(!response.data.sport)
+              {
+                props.setKorisnik(response.data);
+                localStorage.setItem("korisnik", JSON.stringify(response.data));
+                if(response.data.isAdmin)
+                   navigate('./Klubovi');
+              }
+              else
+              {
+                localStorage.removeItem("izabraniKlub");
+                props.setIzabraniKlub(null);
+                props.setKlub(null);
+                localStorage.setItem("klub",JSON.stringify(response.data));
+                props.setKlub(response.data);
+                navigate('./');
+              }
             handleClick();
           setTip('success');
           setPoruka('Uspesno ste se prijavili!');

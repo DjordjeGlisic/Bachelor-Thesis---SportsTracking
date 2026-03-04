@@ -12,6 +12,7 @@ import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
 import SideBar from "./SideBar";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar'; 
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 export default function Navbar({ onOpenLogin }) {
       const { setBackground,setLetters, setPrijavljen,setContentColor,korisnik,setKorisnik,openSide,setOpenSide,izabraniKlub,setIzabraniKlub,chat,setChat,ruta,setRuta,modal,setModal } = useContext(Context);
      
@@ -71,7 +72,9 @@ export default function Navbar({ onOpenLogin }) {
 
       {/* CENTER */}
       <ul className="navbar-center">
+        {(!korisnik || (!korisnik.isAdmin)) &&(
         <li className={ruta === "./" ? "nav-item active" : "nav-item"} onClick={()=>{setActiveOption(3);localStorage.removeItem("izabraniKlub");setIzabraniKlub(null);setRuta("./");navigate("./")}}>Početna</li>
+        )}
         <li className={ruta === "./Takmicenja" ? "nav-item active" : "nav-item"} onClick={()=>{setActiveOption(1);setRuta("./Takmicenja");navigate("./Takmicenja");localStorage.removeItem("izabraniKlub");setIzabraniKlub(null);}}>Takmičenja</li>
         <li className={ruta === "./Klubovi"|| ruta === "./Klub" ? "nav-item active" : "nav-item"} onClick={()=>{setActiveOption(2);setRuta("./Klubovi");navigate("./Klubovi");localStorage.removeItem("izabraniKlub");setIzabraniKlub(null);}}>Klubovi</li>
       </ul>
@@ -92,7 +95,9 @@ export default function Navbar({ onOpenLogin }) {
       fontSize: 13,
       background: "transparent",
       color: "white",
-    }} onClick={()=>{setOpen(!open)}}>{korisnik.ime[0]}{korisnik.prezime[0]} </Avatar>
+    }} onClick={()=>{setOpen(!open)}}>
+     {korisnik.isAdmin ? <AdminPanelSettingsIcon sx={{ fontSize: 18 }} /> : `${korisnik.ime[0]}${korisnik.prezime[0]}`}
+       </Avatar>
           {open && (
             <div className="dropdown" role="menu">
             <button
@@ -116,9 +121,11 @@ export default function Navbar({ onOpenLogin }) {
         <button className="icon-btn">
           <span className="icon" onClick={()=>{setBackground(icon===1?"#E4E6EA":"#1E1E1E"); setLetters(icon===1?"#1E1E1E":"#E4E6EA");setContentColor(icon==1?"#dbd5cb": "#605857");setIcon(icon===1?2:1)}}><>{icon === 1 ? <DarkModeIcon /> : <LightModeIcon />}</></span>
         </button>
+        {(!korisnik || (!korisnik.isAdmin)) &&(
          <button className="icon-btn"  disabled={korisnik===null} onClick={(e)=>{e.preventDefault();setActiveOption(4);setChat(null);setRuta("./Inbox");navigate("./Inbox");setIzabraniKlub(null);}} >
           <span className="icon"><MailTwoToneIcon sx={{color:ruta === "./Inbox" ? " #ff7a00" : "white"}}   /></span>
         </button>
+         ) }
        
       </div>
     

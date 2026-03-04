@@ -24,6 +24,7 @@ namespace Models
         public DbSet<FudbalStatistika> FudbalStatistike { get; set; }
         public DbSet<KosarkaStatistika> KosarkaStatistike { get; set; }
         public DbSet<VaterpoloStatistika> VaterPoloStatistike { get; set; }
+        public DbSet<Admin> Admin {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -106,6 +107,14 @@ namespace Models
                 .HasValue<FudbalStatistika>(Strukture.SportType.Fudbal)
                 .HasValue<KosarkaStatistika>(Strukture.SportType.Kosarka)
                 .HasValue<VaterpoloStatistika>(Strukture.SportType.Vaterpolo);
+        modelBuilder.Entity<Admin>().HasData(
+        new Admin
+        {
+            Id = 1,
+            Username = "admin.super@domain.com", 
+            Lozinka = "SigurnaSifra123!" 
+        }
+    );
         }
     }
 }

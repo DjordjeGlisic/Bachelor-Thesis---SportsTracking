@@ -87,7 +87,7 @@ namespace Services
 
               var keys = _server.Keys(pattern: "vest:*");
                 if(keys==null)
-                    throw new Exception("Nema zapamcenih vesti u bazi");
+                   return res;
             foreach(var n in novosti)
             {
                  NovostZaKorisnika o = new NovostZaKorisnika
@@ -504,9 +504,281 @@ namespace Services
 
     return tabela;
         }
-    
+    public async Task<NovostZaKorisnika> DodajNovuVest(int klubID,NovostZaDodavanje novost)
+    {
+        var klub= await _context.Set<Klub>().FirstOrDefaultAsync(p => p.Id == klubID);
+        if(klub == null)
+            throw new Exception("Mije pronadjen klub u bazi");
+        if(novost == null)
+            throw new Exception("Nije poslata vest za dodavanje");
+        var dodavanje= new Novosti()
+        {
+            Slika = novost.Slika,
+            Naslov= novost.Naslov,
+            Sazetak = novost.Sazetak,
+            Vest = novost.Vest,
+            Autor = novost.Autor,
+            Datum = DateTime.UtcNow,
+            BrojLajkova = 0,
+            BrojDislajkova = 0,
+            KlubID = klubID,
+            Klub = klub
+        };
+        await _context.AddAsync(dodavanje);
+        await _context.SaveChangesAsync();
+        var novaStatistika = new StatistikaNovosti
+        {
+            Id = dodavanje.Id,
+            IdKorisnikaKojiLajkuju = new List<int>(),
+            IdKorisnikaKojiDislajkuju = new List<int>(),
+         
+        };
+        string redisKey = $"vest:{dodavanje.Id}";
+        string jsonValue = JsonConvert.SerializeObject(novaStatistika);
+        await _db.StringSetAsync(redisKey, jsonValue);
+        return new NovostZaKorisnika()
+        {
+            Id=dodavanje.Id,
+            Slika=dodavanje.Slika, 
+            Naslov = dodavanje.Naslov,
+            Sazetak = dodavanje.Sazetak,
+            Vest = dodavanje.Vest,
+            Autor=dodavanje.Autor,
+            Datum = dodavanje.Datum,
+            BrojLajkova = dodavanje.BrojLajkova,
+            BrojDislajkova = dodavanje.BrojDislajkova,
+            KlubID=dodavanje.KlubID,
+            LikedByMe=false,
+            DislikedByMe=false
+        };
+        
     }
+     public async  Task<NovostZaKorisnika> PromeniPostojecuVest(int klubID,NovostZaKorisnika novost)
+        {
+        var klub= await _context.Set<Klub>().FirstOrDefaultAsync(p => p.Id == klubID);
+        if(klub == null)
+            throw new Exception("Nije pronadjen klub u bazi");
+        var postoji= await _context.Set<Novosti>().FirstOrDefaultAsync(p => p.Id == novost.Id);
+        if(postoji == null)
+            throw new Exception("Nije poslata vest za dodavanje");
+        postoji.Slika=novost.Slika;
+        postoji.Autor=novost.Autor;
+        postoji.Vest=novost.Vest;
+        postoji.Naslov=novost.Naslov;
+        postoji.Sazetak=novost.Sazetak;
+       await _context.SaveChangesAsync();
+       return novost;
+            
+        }
+        public async Task<int> ObrisiPostojecuVestAsync(int klubID,int vestID)
+        {
+             var klub= await _context.Set<Klub>().FirstOrDefaultAsync(p => p.Id == klubID);
+            if(klub == null)
+                throw new Exception("Nije pronadjen klub u bazi");
+            var vest= await _context.Set<Novosti>().FirstOrDefaultAsync(p => p.Id == vestID);
+            if(vest == null)
+                throw new Exception("Mije pronadjena vest u bazi");
+           _context.Set<Novosti>().Remove(vest);
+           await _context.SaveChangesAsync();
+           string redisKljuc = $"vest:{vestID}";
+        await _db.KeyDeleteAsync(redisKljuc);
+        return vestID;
 
+            
+        }
+        public async Task<SastavKluba> DodajIgracaTimuAsync(int klubID,IgracDTO igrac)
+        {
+            var postojiKlub = await _context.Set<Klub>().FirstOrDefaultAsync(p => p.Id == klubID);
+            if(postojiKlub == null)
+                throw new Exception("Nije pronadjen klub u bazi");
+            var postojiIgrac = await _context.Set<Igrac>().FirstOrDefaultAsync(p => p.Ime == igrac.Ime && p.Prezime==igrac.Prezime && p.DatumRodjenja==igrac.DatmRodjenja);
+            if(postojiIgrac != null)
+                throw new Exception("Dati igrac koga pokusavate da kreirate vec postoji u bazi");
+            var takmicenja= await _context.Set<Takmicenje>().Where(p=>igrac.Takmicenja.Contains(p.Naziv)).ToListAsync();
+            var ucinci=new List<Ucinak>();
+            DateTime danas = DateTime.Now;
+            int trenutnaGodina = danas.Year;
+            int trenutniMesec = danas.Month;
+            string sezona="";
+            if (trenutniMesec >= 8)
+            {
+               sezona = $"{trenutnaGodina}/{trenutnaGodina + 1}";
+            }
+            else
+            {
+                sezona = $"{trenutnaGodina-1}/{trenutnaGodina}";
+            }
+            var godine = IzracunajGodine(igrac.DatmRodjenja);
+            var toAddIgrac =  new Igrac
+            {
+                Ime = igrac.Ime,
+                Prezime=igrac.Prezime,
+                DatumRodjenja=igrac.DatmRodjenja,
+                DatumKrajaUgovora=igrac.DatumKrajaUgovora,
+                DatumPocetkaUgovora=igrac.DatumPocetkaUgovora,
+                Pozicija=igrac.Pozicija,
+                Visina=igrac.Visina,
+                Tezina=igrac.Tezina,
+                ListaKlubova=igrac.ListaKlubova,
+                BrojGodina = godine,
+                Klub  = postojiKlub,
+                KlubID = postojiKlub.Id, 
+
+            };
+            await _context.Set<Igrac>().AddAsync(toAddIgrac);
+            await _context.SaveChangesAsync();
+            if(takmicenja!=null)
+            {
+                foreach(var x in takmicenja)
+                {
+                    var ucinak=new Ucinak
+                    {
+                        Pogotci=0,
+                        Asistencije=0,
+                        UkupnoSuteva=0,
+                        IndeksKorisnosti=0,
+                        OdigraneUtakmice=0,
+                        IzgubljeneLopte= postojiKlub.Sport == SportType.Fudbal ? null : 0,
+                        UkradeneLopte = postojiKlub.Sport == SportType.Kosarka ? 0 : null,
+                        BlokiraniUdarci = 0,
+                        VraceniPosedi = postojiKlub.Sport == SportType.Kosarka ? null : 0,
+                        UkupnoDodavanja = postojiKlub.Sport == SportType.Fudbal ? 0 : null,
+                        UkupnoTacnihDodavanja = postojiKlub.Sport == SportType.Fudbal ? 0 : null,
+                        PredjenaDistancaKM = postojiKlub.Sport == SportType.Fudbal ? 0 : null,
+                        Sezona = sezona,
+                        NazivKluba = postojiKlub.Naziv,
+                        Skokovi = postojiKlub.Sport == SportType.Kosarka ? 0 : null,
+                        SkokoviOF = postojiKlub.Sport == SportType.Kosarka ? 0 : null,
+                        SkokoviDF = postojiKlub.Sport == SportType.Kosarka ? 0 : null,
+                        Iskljucenja = postojiKlub.Sport == SportType.Vaterpolo ? 0 : null,
+                        UkupnoFaula = 0,
+                        CrveniKartoni = postojiKlub.Sport == SportType.Fudbal ? 0 : null,
+                        ZutiKartoni =  postojiKlub.Sport == SportType.Fudbal ? 0 : null,
+                        Takmicenje = x,
+                        TakmicenjeId = x.Id,
+                        IgracId =toAddIgrac.Id,
+                        Igrac = toAddIgrac                        
+                    };
+                    await _context.Set<Ucinak>().AddAsync(ucinak);
+                    await _context.SaveChangesAsync();
+                    
+                }
+            }
+            return new SastavKluba
+            {
+                Id=toAddIgrac.Id,
+                Ime = toAddIgrac.Ime,
+                Prezime =  toAddIgrac.Prezime,
+                DatumPocetkaUgovora= toAddIgrac.DatumPocetkaUgovora,
+                DatumKrajaUgovora = toAddIgrac.DatumKrajaUgovora,
+                Pozicija = toAddIgrac.Pozicija,
+                Visina = toAddIgrac.Visina,
+                Tezina = toAddIgrac.Tezina,
+                DatumRodjenja = toAddIgrac.DatumRodjenja,
+                ListaKlubova =  toAddIgrac.ListaKlubova,
+                BrojGodina = toAddIgrac.BrojGodina,
+                KlubID = toAddIgrac.KlubID,
+                IndeksniRejting=toAddIgrac.Ucinci.Where(p=>p.IgracId==toAddIgrac.Id).OrderByDescending(p=>p.Sezona).Select(p=>p.IndeksKorisnosti).FirstOrDefault()
+
+
+            };
+        }
+        public async Task<SastavKluba> IzmeniIgracaKlubaAsync(int igracID,SastavKluba igrac)
+        {
+            var postojiIgrac = await _context.Set<Igrac>().FirstOrDefaultAsync(p => p.Id==igracID);
+            if(postojiIgrac == null)
+                throw new Exception("Dati igrac koga pokusavate da modifikujete ne postoji u bazi");
+            postojiIgrac.Ime = igrac.Ime;
+            postojiIgrac.Prezime=igrac.Prezime;
+            postojiIgrac.DatumRodjenja=igrac.DatumRodjenja;
+            postojiIgrac.DatumKrajaUgovora=igrac.DatumKrajaUgovora;
+            postojiIgrac.DatumPocetkaUgovora=igrac.DatumPocetkaUgovora;
+            postojiIgrac.Pozicija=igrac.Pozicija;
+            postojiIgrac.Visina=igrac.Visina;
+            postojiIgrac.Tezina=igrac.Tezina;
+            postojiIgrac.ListaKlubova=igrac.ListaKlubova;
+            var godine = IzracunajGodine(igrac.DatumRodjenja);
+            postojiIgrac.BrojGodina = godine;
+            await _context.SaveChangesAsync();
+              return new SastavKluba
+            {
+                Id=postojiIgrac.Id,
+                Ime = postojiIgrac.Ime,
+                Prezime =  postojiIgrac.Prezime,
+                DatumPocetkaUgovora= postojiIgrac.DatumPocetkaUgovora,
+                DatumKrajaUgovora = postojiIgrac.DatumKrajaUgovora,
+                Pozicija = postojiIgrac.Pozicija,
+                Visina = postojiIgrac.Visina,
+                Tezina = postojiIgrac.Tezina,
+                DatumRodjenja = postojiIgrac.DatumRodjenja,
+                ListaKlubova =  postojiIgrac.ListaKlubova,
+                BrojGodina = postojiIgrac.BrojGodina,
+                KlubID = postojiIgrac.KlubID,
+                IndeksniRejting=postojiIgrac.Ucinci.Where(p=>p.IgracId==postojiIgrac.Id).OrderByDescending(p=>p.Sezona).Select(p=>p.IndeksKorisnosti).FirstOrDefault()
+
+
+            };
+        }
+        public int IzracunajGodine(DateOnly datumRodjenja)
+        {
+            var danas = DateOnly.FromDateTime(DateTime.Now);
+            int godine = danas.Year - datumRodjenja.Year;
+
+            // Ako rođendan ove godine još nije bio, oduzmi jednu godinu
+            if (danas < datumRodjenja.AddYears(godine))
+            {
+                godine--;
+            }
+
+            return godine;
+        }
+        public async Task<int> ObrisiPostojecegIgracaAsync(int klubID,int igracID)
+        {
+             var klub= await _context.Set<Klub>().FirstOrDefaultAsync(p => p.Id == klubID);
+            if(klub == null)
+                throw new Exception("Nije pronadjen klub u bazi");
+            var igrac= await _context.Set<Igrac>().FirstOrDefaultAsync(p => p.Id == igracID);
+            if(igrac == null)
+                throw new Exception("Mije pronadjena vest u bazi");
+           _context.Set<Igrac>().Remove(igrac);
+           await _context.SaveChangesAsync();
+            return igracID;
+
+            
+        }
+        public async Task<OdgovorPrijave> ImeniInformacijeKlubaAsync(int klubID,KlubDTO klub)
+        {
+            var postoji = await _context.Set<Klub>().FirstOrDefaultAsync(p => p.Id == klubID);
+            if(postoji == null)
+                throw new Exception("Prosledjeni klub ne postoji u bazi");
+            postoji.Adresa = klub.Adresa;
+            postoji.Istorija=klub.Istorija;
+            postoji.Prihodi = klub.Prihodi;
+            postoji.Rashodi = klub.Rashodi;
+            postoji.Sponzori = klub.Sponzori;
+            postoji.Trofeji = klub.Trofeji;
+            postoji.Email = klub.Username;
+            await _context.SaveChangesAsync();
+            return new OdgovorPrijaveKluba
+            {
+                Id = postoji.Id,
+                Username = postoji.Email,
+                Sport = (int)postoji.Sport,
+                Naziv = postoji.Naziv,
+                Takicenja=postoji.Takmicenja.Select(s=>s.Takmicenje.Naziv).ToList(),
+                Logo = postoji.LogoURL,
+                Trofeji = postoji.Trofeji,
+                Istorija = postoji.Istorija,
+                Prihodi = postoji.Prihodi,
+                Rashodi = postoji.Rashodi,
+                Sponzori=postoji.Sponzori,
+                Adresa=postoji.Adresa,
+                BrojPratioca=postoji.Pratioci.Count
+            };
+
+        }
+    }
+   
 
 }
                   

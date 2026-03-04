@@ -6,16 +6,19 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Tooltip } from "@mui/material";
+import { Alert, Avatar, Snackbar, Tooltip } from "@mui/material";
 import { Context,KluboviContext } from "../Context/Context";
 import axios from "axios";
 import OpsteInfo from "./StraniceKluba/OpsteInfo";
 import Novosti from "./StraniceKluba/Novosti";
 import SastavKluba from "./StraniceKluba/SastavKluba";
 import UcinakKluba from "./StraniceKluba/UcinakKluba";
+import { useNavigate } from "react-router-dom";
+import Inbox from "../Inbox/Inbox";
 
 const  HeaderKluba=()=>{
-
+  const [open,setOpen]=useState(false);
+  const navigate=useNavigate();
  const [izabraniIgrac,setIzabraniIgrac]=useState(null);
     const pratiText = (n) => {
   if (n === 1) return "1 korisnik prati klub";
@@ -23,9 +26,9 @@ const  HeaderKluba=()=>{
   return `${n} korisnika prati klub`;
 };
   const [formOpen, setFormOpen] = useState(true);
-const[activeTab, setActiveTab] = useState("rezultati");
-const [opcija,setOpcija]=useState("rezultati");
-const {klub}=useContext(KluboviContext);
+const[activeTab, setActiveTab] = useState("ucniak");
+const [opcija,setOpcija]=useState("ucinak");
+const {klub,setKlub}=useContext(KluboviContext);
 const {korisnik,izabraniKlub}=useContext(Context);
 const korisnikTabs=[
     { key: "ucinak", label: "Učinak kluba" },
@@ -34,7 +37,7 @@ const korisnikTabs=[
     { key: "sastav", label: "Sastav" },
   ];
   const klubTabs=[
-    { key: "rezultati", label: "Rezultati" },
+    { key: "ucinak", label: "Učinak kluba" },
     { key: "opsteInfo", label: "Opšte informacije" },
     { key: "novosti", label: "Novosti" },
     { key: "sastav", label: "Sastav" },
@@ -49,6 +52,7 @@ const brojPratilaca = aktivniKlub?.brojPratioca ?? aktivniKlub?.brojPratiocaKlub
 const [formMatches,setFormMatches]=useState([]);
 
 useEffect(()=>{
+  
   if(!aktivniKlub) return;
      const response =  axios.get(`http://localhost:5146/Klub/VratiFormuTima/${aktivniKlub.id}`,
       {
@@ -63,7 +67,11 @@ useEffect(()=>{
       .catch(error=>{
         console.log(error);
       })
-},[izabraniKlub,klub])
+},[izabraniKlub,klub]);
+useEffect(()=>{
+  setActiveTab("ucinak");
+  setOpcija("ucinak");
+},[klub])
 function formatDateTime(ts) {
   return new Intl.DateTimeFormat("sr-RS", {
     day: "2-digit",
@@ -73,6 +81,10 @@ function formatDateTime(ts) {
     minute: "2-digit"
   }).format(new Date(ts));
 }
+  const [alert,setAlert]=useState("");
+  const[severity,setSeverity]=useState("");
+  const [openSnack,setOpenSnack]=useState(false);
+  const hideSnack=()=>{setAlert("");setSeverity("");setOpenSnack(false);}
   return (
     <>
     {aktivniKlub&&(
@@ -203,6 +215,19 @@ function formatDateTime(ts) {
                 {t.label}
               </button>
             ))}
+            {klub && (
+               <button
+                  type="button"
+                  className={"kh-tab " + (open === true ? "kh-tab--active" : "")}
+                  onClick={()=>{
+                    setKlub(null);
+                    localStorage.removeItem("klub");
+                    navigate("./");
+                  }}>Odjava</button>
+                  
+         
+
+            )}
           </div>
         </div>
       </div>
@@ -210,11 +235,17 @@ function formatDateTime(ts) {
       {/* SCROLLABLE CONTENT ISPOD HEDERA */}
       <div className="kh-contentScroll">
         {opcija==="ucinak"&&<UcinakKluba/>}
-        {opcija==="opsteInfo"&&<OpsteInfo/>}
+        {opcija==="opsteInfo"&&<OpsteInfo alert={alert} setAlert={setAlert} openSnack={openSnack} setOpenSnack={setOpenSnack} hideSnack={hideSnack} severity={severity} setSeverity={setSeverity}/>}
         {opcija==="novosti"&&<Novosti/>}
-        {opcija==="sastav"&&<SastavKluba izabraniIgrac={izabraniIgrac} setIzabraniIgrac={setIzabraniIgrac}/>}
+        {opcija==="sastav"&&<SastavKluba izabraniIgrac={izabraniIgrac} setIzabraniIgrac={setIzabraniIgrac} alert={alert} setAlert={setAlert} openSnack={openSnack} setOpenSnack={setOpenSnack} hideSnack={hideSnack} severity={severity} setSeverity={setSeverity} />}
+         {opcija==="inbox"&&<Inbox/>}
       </div>
     </div>)}
+     <Snackbar open={openSnack} autoHideDuration={6000} onClose={hideSnack}>
+      <Alert onClose={hideSnack} severity={severity} variant="filled" sx={{ width: '100%' }}>
+        {alert}
+      </Alert>
+    </Snackbar>
     </>
   );
 }

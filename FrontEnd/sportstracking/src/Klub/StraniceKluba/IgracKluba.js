@@ -15,10 +15,11 @@ function splitByComma(input) {
     .map(s => s.trim())
     .filter(s => s.length > 0);
 }
-export default function IgracKluba(props) {
+export default function IgracKluba({izabraniIgrac}) {
+  
     const[parametri,setParametri]=useState(null);
     useEffect(()=>{
-        axios.get(`http://localhost:5146/Klub/VratiParametreIgraca/${props.izabraniIgrac.id}`)
+        axios.get(`http://localhost:5146/Klub/VratiParametreIgraca/${izabraniIgrac.id}`)
         .then((response)=>{
             setParametri(response.data);
             setTakmicenje(response.data.takmicenja[0].id);
@@ -30,6 +31,7 @@ export default function IgracKluba(props) {
     },[])
 const {korisnik,izabraniKlub,sport}=useContext(Context);
 const {klub}=useContext(KluboviContext);
+const Sport= klub ? klub.sport  : sport;
 const[stat,setStat]=useState(null);
 const [sezona,setSezona]=useState(null);
   const [takmicenje,setTakmicenje]=useState(null);
@@ -37,7 +39,7 @@ useEffect(()=>{
     if(sezona==null||takmicenje==null)
         return;
      const sezonaUrl = encodeURIComponent(sezona);
-     axios.get(`http://localhost:5146/Klub/VratiStatistikuIgraca/${props.izabraniIgrac.id}/${sezonaUrl}/${takmicenje}`)
+     axios.get(`http://localhost:5146/Klub/VratiStatistikuIgraca/${izabraniIgrac.id}/${sezonaUrl}/${takmicenje}`)
      .then((resp)=>{console.log("Statistika igraca",resp.data);setStat(resp.data);})
      .catch((err)=>{console.log(err);})
 },[sezona,takmicenje])
@@ -106,29 +108,29 @@ const statistikaVaterpolo=()=>{
 
         <div className="ik-main">
           <h1 className="ik-name">
-            {props.izabraniIgrac.ime.toUpperCase()} {props.izabraniIgrac.prezime.toUpperCase()}
+            {izabraniIgrac.ime.toUpperCase()} {izabraniIgrac.prezime.toUpperCase()}
           </h1>
 
           <div className="ik-sub">
-            {props.izabraniIgrac.pozicija}
+            {izabraniIgrac.pozicija}
           </div>
 
           <div className="ik-info">
             <div>
               <span>Godine</span>
-              <strong>{props.izabraniIgrac.brojGodina}</strong>
+              <strong>{izabraniIgrac.brojGodina}</strong>
             </div>
             <div>
               <span>Visina</span>
-              <strong>{props.izabraniIgrac.visina.toFixed(2)} cm</strong>
+              <strong>{izabraniIgrac.visina.toFixed(2)} cm</strong>
             </div>
             <div>
               <span>Težina</span>
-              <strong>{props.izabraniIgrac.tezina.toFixed(2)} kg</strong>
+              <strong>{izabraniIgrac.tezina.toFixed(2)} kg</strong>
             </div>
             <div>
               <span>Datum rođenja</span>
-              <strong>{formatDate(props.izabraniIgrac.datumRodjenja)}</strong>
+              <strong>{formatDate(izabraniIgrac.datumRodjenja)}</strong>
             </div>
           </div>
         </div>
@@ -137,7 +139,7 @@ const statistikaVaterpolo=()=>{
       {/* CLUBS */}
       <div className="ik-clubs">
         <p>Igrao za sledeće klubove:</p>
-        {splitByComma(props.izabraniIgrac.listaKlubova).map((k) => (
+        {splitByComma(izabraniIgrac.listaKlubova).map((k) => (
           <div key={k} className="ik-clubCard">
             
             <span>{k}</span>
@@ -160,7 +162,7 @@ const statistikaVaterpolo=()=>{
           </select>
         </div>
         {stat!==null&&(<>
-            {sport===1?statistikaFudbal():sport===2?statistikaKosarka():statistikaVaterpolo()}
+            {Sport===1?statistikaFudbal():Sport===2?statistikaKosarka():statistikaVaterpolo()}
         </>)}
        
       </div>)}

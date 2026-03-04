@@ -14,5 +14,13 @@ namespace Services
         Task<List<Takmicenje>> VratiTakmicenjaKlubaAsync(int klubID );
         Task<UcinakKluba> VratiUtakmiceTakmicenjaAsync(int klubID,int takmicenjeID);
         Task<List<TabelaKluba>> VratiTabeluKlubaZaTakmicenjeAsync(int takmicenjeID,string sezona,int klubID);
+        Task<NovostZaKorisnika> DodajNovuVest(int klubID,NovostZaDodavanje novost);
+        Task<NovostZaKorisnika> PromeniPostojecuVest(int klubID,NovostZaKorisnika novost);
+        Task<int> ObrisiPostojecuVestAsync(int klubID,int vestID);
+        Task<SastavKluba> DodajIgracaTimuAsync(int klubID,IgracDTO igrac);
+        Task<SastavKluba> IzmeniIgracaKlubaAsync(int igracID,SastavKluba igrac);
+        Task<int> ObrisiPostojecegIgracaAsync(int klubID,int igracID);
+        Task<OdgovorPrijave> ImeniInformacijeKlubaAsync(int klubID,KlubDTO klub);
+        
     }
 }

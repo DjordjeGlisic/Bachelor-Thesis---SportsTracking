@@ -133,9 +133,20 @@ const KarticaKlub = (props) => {
 
         {/* DNO: 3 dugmeta u redu */}
         <div className="club-card-actions">
+          { (!korisnik || (korisnik && !korisnik.isAdmin)) && (
+          <>
           <button className="club-btn club-btn-secondary"onClick={()=>{console.log(props.obj);localStorage.setItem("izabraniKlub",JSON.stringify(props.obj));setIzabraniKlub(props.obj);setRuta('/Klub');navigate("../Klub")}}>Detalji</button>
           <button className="club-btn club-btn-primary" onClick={pracenjeHandler}>{props.obj.korisnikPrati===false?"Prati":"Odprati" }</button>
           <button className="club-btn club-btn-secondary" onClick={(e)=>{e.preventDefault();korisnik===null||props.obj.korisnikPrati===false?Obavestenje():Redirekcija()}}>Kontakt</button>
+          </>
+          )}
+          { (korisnik && korisnik.isAdmin) && (
+          <>
+          <button className="club-btn club-btn-secondary"onClick={()=>{console.log(props.obj);localStorage.setItem("izabraniKlub",JSON.stringify(props.obj));setIzabraniKlub(props.obj);setRuta('/Klub');navigate("../Klub")}}>Izmeni osnovne podatke</button>
+          <button className="club-btn club-btn-primary" onClick={pracenjeHandler}>Izmeni gde se takmiči</button>
+          <button className="club-btn club-btn-secondary" onClick={(e)=>{e.preventDefault();korisnik===null||props.obj.korisnikPrati===false?Obavestenje():Redirekcija()}}>Obriši klub</button>
+          </>
+          )}
         </div>
       </div>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

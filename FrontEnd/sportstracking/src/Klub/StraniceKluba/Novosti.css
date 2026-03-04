@@ -1,0 +1,41 @@
+/* Kontejner za ikonice u zaglavlju */
+.pk-news-head {
+  display: flex;
+  align-items: center;
+  position: relative; /* Omogućava precizno pozicioniranje ako zatreba */
+}
+
+.pk-news-admin-actions {
+  margin-left: auto; /* Gura ikonice skroz desno */
+  display: flex;
+  gap: 8px;
+}
+
+/* Zajednički stil za admin dugmiće */
+.pk-news-admin-actions .MuiIconButton-root {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #a0a0a0;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+/* Stil za Edit (Plava/Bela) */
+.pk-btn-edit:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+/* Stil za Delete (Crvena) */
+.pk-btn-delete:hover {
+  background-color: rgba(244, 67, 54, 0.15) !important;
+  color: #f44336 !important;
+}
+
+/* Opciono: Ako želiš da ikonice budu malo manje upadljive dok se ne pređe mišem */
+.pk-news-admin-actions {
+  opacity: 0.7;
+}
+
+.pk-news-card:hover .pk-news-admin-actions {
+  opacity: 1;
+}

@@ -38,17 +38,23 @@ namespace DTO
      
         public int Telefon { get; set; }
     }
+    public class OdgovorPrijaveAdmina : OdgovorPrijave
+    {      
+        public bool IsAdmin{get;set;}
+    }
     public class OdgovorPrijaveKluba: OdgovorPrijave
     {
        public int Sport { get; set; }
        public string Naziv{get;set;}
        public string Logo {get;set;}
-       public string ListaTrofeja{get;set;}
+       public string Trofeji{get;set;}
        public string Istorija{get;set;}
        public string Prihodi {get;set;}
        public string Rashodi {get;set;}
-       public string ListaSponzora{get;set;}
+       public string Sponzori{get;set;}
        public string Adresa{get;set;}
+       public int BrojPratioca{get;set;}
+       public List<string> Takicenja{get;set;}=new List<string>();
     }
     public class PorukaSadrzaj
     {
@@ -126,12 +132,13 @@ namespace DTO
         
     }
     public class ReactionResult
-{
-    public int VestId { get; set; }
-    public int Likes { get; set; }
-    public int Dislikes { get; set; }
-    public bool LikedByMe { get; set; }
-    public bool DislikedByMe { get; set; }
-}
+    {
+        public int VestId { get; set; }
+        public int Likes { get; set; }
+        public int Dislikes { get; set; }
+        public bool LikedByMe { get; set; }
+        public bool DislikedByMe { get; set; }
+    }
+ 
 }
 

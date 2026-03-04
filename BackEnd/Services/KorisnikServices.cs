@@ -60,9 +60,20 @@ namespace Services
 
         public async Task<OdgovorPrijave> PrijavaAsync(PrijavaKorisnika dto)
         {
-            if( dto.Username.Contains(".") && dto.Username.Contains("@") )
+            var admin = await _context.Set<Admin>().FirstOrDefaultAsync(p => p.Username == dto.Username && p.Lozinka == dto.Lozinka);
+            if(admin != null)
+            {
+                return new OdgovorPrijaveAdmina
+                {
+                    Id = admin.Id,
+                    Username = admin.Username,
+                    IsAdmin = true
+                };
+            }
+            else if( dto.Username.Contains(".") && dto.Username.Contains("@") )
             {
                 var klub=await _context.Set<Klub>()
+                    .Include(k => k.Pratioci)
                     .Where(k=>k.Email==dto.Username&&k.Password==dto.Lozinka)
                     .Select(k => new OdgovorPrijaveKluba
                     {
@@ -70,13 +81,15 @@ namespace Services
                         Username = k.Email,
                         Sport = (int)k.Sport,
                         Naziv = k.Naziv,
+                        Takicenja=k.Takmicenja.Select(s=>s.Takmicenje.Naziv).ToList(),
                         Logo = k.LogoURL,
-                        ListaTrofeja = k.Trofeji,
+                        Trofeji = k.Trofeji,
                         Istorija = k.Istorija,
                         Prihodi = k.Prihodi,
                         Rashodi = k.Rashodi,
-                        ListaSponzora=k.Sponzori,
-                        Adresa=k.Adresa
+                        Sponzori=k.Sponzori,
+                        Adresa=k.Adresa,
+                        BrojPratioca=k.Pratioci.Count
                     })
                     .FirstOrDefaultAsync();
 
@@ -84,6 +97,7 @@ namespace Services
                     {
                         throw new InvalidOperationException("Pogresan email ili lozinka.");
                     }
+                    return klub;
  
             }
             else
@@ -1124,7 +1138,7 @@ public async Task<List<object>> VratiKluboveAsync(SportType sport,int? korisnikI
                             Prihodi=p.Prihodi,
                             Rashodi=p.Rashodi,
                             Istorija=p.Istorija,
-                            Trofeiji=p.Trofeji,
+                            Trofeji=p.Trofeji,
                             Adresa=p.Adresa,
                             Email=p.Email
                         })
@@ -1271,6 +1285,8 @@ public async Task ZapratiKlubAsync(int korisnikID,int klubID)
                 Day=poruka.Dan
             };
             await _hubContext.Clients.All.SendAsync($"Stigla nova poruka korID={korisnikID} klubID={klubID}",dto);
+            int ID=korisnik ? klubID : korisnikID;
+            await _hubContext.Clients.All.SendAsync($"Stigla nova poruka ID={ID}",dto);
             var id=korisnik==true?korisnikID:klubID;
             if(vecPostoji==false)
             {

@@ -62,7 +62,7 @@ const  Registracija=(props)=>{
         {
             handleClick();
             setTip('error');
-            setPoruka('Korisničko ime mora sadržati slova i brojeve i mora imati bar 5 karaktera.');
+            setPoruka('Korisničko ime mora sadržati samo slova i brojeve i mora imati bar 5 karaktera.');
             return;
             
         }

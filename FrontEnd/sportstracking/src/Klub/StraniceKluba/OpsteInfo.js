@@ -1,14 +1,19 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo,useState } from "react";
 import{ Context,KluboviContext } from "../../Context/Context";
 import "./OpsteInfo.css";
 import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Button } from "@mui/material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ModalPage from "../../modalWrappers/ModalPage";
+import axios from "axios";
 
-const OpsteInfo = () => {
+const OpsteInfo = ({alert,setAlert,openSnack,setOpenSnack,hideSnack,severity,setSeverity}) => {
 const { korisnik, izabraniKlub } = useContext(Context);
   const { klub } = useContext(KluboviContext);
-
-  const aktivniKlub = izabraniKlub ? izabraniKlub : klub;
+  const [aktivniKlub,setAktivniKlub]=useState(izabraniKlub ? izabraniKlub : klub);
+  let backup=izabraniKlub ? izabraniKlub : klub;
+  // const aktivniKlub = izabraniKlub ? izabraniKlub : klub;
 
  
 
@@ -37,6 +42,31 @@ const { korisnik, izabraniKlub } = useContext(Context);
     if (!Number.isFinite(n)) return 0;
 
     return Math.round(n * mult);
+  };
+     const formatNumberToMoney = (num) => {
+    if (num === null || num === undefined || isNaN(num)) return "0€";
+  
+    const absNum = Math.abs(num);
+    let formatted = "";
+    let suffix = "";
+  
+    if (absNum >= 1_000_000_000) {
+      formatted = (num / 1_000_000_000).toFixed(1);
+      suffix = "B";
+    } else if (absNum >= 1_000_000) {
+      formatted = (num / 1_000_000).toFixed(1);
+      suffix = "M";
+    } else if (absNum >= 1_000) {
+      formatted = (num / 1_000).toFixed(1);
+      suffix = "K";
+    } else {
+      formatted = num.toString();
+    }
+  
+    // Ukloni .0 ako je broj ceo (npr. 7.0M postane 7M)
+    const finalValue = formatted.replace(/\.0$/, "");
+  
+    return `${finalValue}${suffix}€`;
   };
 
   const parseCsvList = (input) => {
@@ -101,10 +131,12 @@ const { korisnik, izabraniKlub } = useContext(Context);
 
   const sponzoriArr = parseCsvList(aktivniKlub?.sponzori);
 
-  const trofejiValid = extractTrophies(aktivniKlub?.trofeiji);
+  const trofejiValid = extractTrophies(aktivniKlub?.trofeji);
   const hasTrophies = trofejiValid.length > 0;
-console.log("OpsteInfo aktivniKlub.trofeji =", aktivniKlub?.trofeiji);
-console.log("OpsteInfo aktivniKlub.trofeji JSON =", JSON.stringify(aktivniKlub?.trofeiji));
+console.log("OpsteInfo aktivniKlub.trofeji =", aktivniKlub?.trofeji);
+console.log("OpsteInfo aktivniKlub.trofeji JSON =", JSON.stringify(aktivniKlub?.trofeji));
+const [openEdit,setOpenEdit]=useState(false);
+const onCloseHandler = () => { setOpenEdit(false)};
 
   // ---------- Pie ----------
   const pie = useMemo(() => {
@@ -121,10 +153,60 @@ console.log("OpsteInfo aktivniKlub.trofeji JSON =", JSON.stringify(aktivniKlub?.
 
   // Ako aktivniKlub još nije spreman (prvi render)
   if (!aktivniKlub) return null;
+  const onSubmitHandler = () =>{
+    let data = aktivniKlub;
+    data.prihodi = formatNumberToMoney(parseMoneyToNumber(aktivniKlub.prihodi));
+    data.rashodi = formatNumberToMoney(parseMoneyToNumber(aktivniKlub.rashodi));
+    console.log("ovo saljem backendu");
+    console.log(data);
+    axios.put(`http://localhost:5146/Klub/AzurirajKlub/${klub.id}`,aktivniKlub)
+    .then((res)=>{
+      setAktivniKlub(res.data);
+      setAlert("Uspešno ažurirane opšte informacije o klubu!");
+      setOpenSnack(true);
+      setSeverity("success");
+
+    })
+    .catch((err)=>{
+      setAktivniKlub(backup);
+      setAlert("Neuspešno ažuriranje opštih informacija o klubu!",err);
+      setOpenSnack(true);
+      setSeverity("error");
+    })
+  }
 
   return (
     <div className="fs-wrap">
       {/* ROW 1: Finansije + Sponzori + Kontakt */}
+      {klub &&(<Button
+        variant="contained"
+        onClick={(e)=>{
+            e.preventDefault();
+          e.stopPropagation();
+          setOpenEdit(true);
+        }}
+        startIcon={<AddCircleOutlineIcon />}
+        sx={{
+          backgroundColor: '#ff7900', // Tvoja narandžasta
+          color: '#000',
+          fontWeight: 'bold',
+          px: 4,
+          py: 1.5,
+          mb:1,
+          borderRadius: '12px',
+          fontSize: '1rem',
+          textTransform: 'none', // Da ne bude sve caps lock
+          boxShadow: '0 4px 14px 0 rgba(255, 121, 0, 0.39)',
+          '&:hover': {
+            backgroundColor: '#e66d00',
+            boxShadow: '0 6px 20px 0 rgba(255, 121, 0, 0.5)',
+            transform: 'translateY(-2px)',
+          },
+          transition: 'all 0.2s ease-in-out',
+        }}
+        >
+          IZMENI OPŠTE INFORMACIJE
+        </Button>)}
       <div className="fs-grid3">
         {/* Finansije */}
         <div className="fs-card">
@@ -270,6 +352,18 @@ console.log("OpsteInfo aktivniKlub.trofeji JSON =", JSON.stringify(aktivniKlub?.
           </div>
         </div>
       </div>
+      {klub &&(
+         <ModalPage
+            open={openEdit}
+            onClose={onCloseHandler}
+            data = {aktivniKlub}
+            setData = {setAktivniKlub}
+            onSubmit = {onSubmitHandler}
+            tip = {'EditInfo'}
+            podtip = {'Izmeni informacije o klubu'}
+            parseMoneyToNumber = {parseMoneyToNumber}
+            />
+      )}
     </div>
   );
 };

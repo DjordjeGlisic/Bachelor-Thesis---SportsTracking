@@ -7,6 +7,7 @@ import Kartica from "../Kartica";
 import axios from "axios";
 import KarticaKlub from "./KarticaKlub";
 import './Klubovi.css';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 const Klubovi = () => {
   
   const {letters,sport,korisnik} = useContext(Context);
@@ -137,6 +138,37 @@ const filteredData = useMemo(() => {
     label="Prikaži samo praćene klubove"
     className="checkbox-label"
   />
+  {korisnik && korisnik.isAdmin && (
+  <Button
+    variant="contained"
+    onClick={(e)=>{
+        e.preventDefault();
+      e.stopPropagation();
+      
+    }}
+    startIcon={<AddCircleOutlineIcon />}
+    sx={{
+      backgroundColor: '#ff7900', // Tvoja narandžasta
+      color: '#000',
+      fontWeight: 'bold',
+      px: 4,
+      py: 1.5,
+      mb:1,
+      borderRadius: '12px',
+      fontSize: '1rem',
+      textTransform: 'none', // Da ne bude sve caps lock
+      boxShadow: '0 4px 14px 0 rgba(255, 121, 0, 0.39)',
+      '&:hover': {
+        backgroundColor: '#e66d00',
+        boxShadow: '0 6px 20px 0 rgba(255, 121, 0, 0.5)',
+        transform: 'translateY(-2px)',
+      },
+      transition: 'all 0.2s ease-in-out',
+    }}
+    >
+      DODAJ NOVI KLUB U {sportText.toUpperCase()} 
+  </Button>
+  )}
 
 </div>
 <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }} >

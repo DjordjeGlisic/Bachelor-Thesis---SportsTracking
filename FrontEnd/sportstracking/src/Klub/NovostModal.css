@@ -184,3 +184,27 @@
   color: rgba(255,255,255,0.75);
   padding: 12px;
 }
+/* Osiguraj da body zauzima preostali prostor i sakrij horizontalni skrol */
+.nm-body {
+    scrollbar-gutter: stable; /* Sprečava "skakanje" sadržaja kada se pojavi skrol */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stil za lepši skrolbar (Chrome/Safari) */
+.nm-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.nm-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nm-body::-webkit-scrollbar-thumb {
+    background: #ff7900; /* Tvoja narandžasta */
+    border-radius: 10px;
+}
+
+.nm-body::-webkit-scrollbar-thumb:hover {
+    background: #e66d00;
+}

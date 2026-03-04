@@ -2,9 +2,13 @@ import React, { useEffect, useMemo,useContext,useState } from "react";
 import "./SastavKluba.css";
 import axios from "axios";
 import { Context,KluboviContext } from "../../Context/Context";
-import { Button } from "@mui/material";
+import { Alert, Button, IconButton, Snackbar } from "@mui/material";
 import IgracKluba from "./IgracKluba";
-
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ModalPage from "../../modalWrappers/ModalPage";
+import DeleteDialog from "../../modalWrappers/DeleteDialog";
 
 
 const sectionOrderFudbal = [
@@ -73,16 +77,19 @@ function ProfileIcon() {
 
 
 
-export default function SastavKluba(props) {
+export default function SastavKluba({izabraniIgrac,setIzabraniIgrac,alert,setAlert,openSnack,setOpenSnack,hideSnack,severity, setSeverity}) {
 
     const {klub}=useContext(KluboviContext);
     const{izabraniKlub,sport}=useContext(Context);
+    const Sport=klub ? klub.sport : sport;
     const[igraci,setIgraci]=useState([]);
     const [sectionOrder,setSectionOrder]=useState([]);
+    const [igrac,setIgrac]=useState(null);
+
     
 const igracHandler=(p)=>{
   console.log(p);
-  props.setIzabraniIgrac(p);
+  setIzabraniIgrac(p);
 }
 function PlayerRow({ p, statKey }) {
   return (
@@ -119,6 +126,43 @@ function PlayerRow({ p, statKey }) {
 
       {/* Stat */}
       <div className="sk-cell sk-center sk-stat" role="cell">{safe(p[statKey])}</div>
+      {klub &&
+       (
+        <div className="pk-news-admin-actions">
+          <IconButton 
+            className="pk-btn-edit" 
+            size="small" 
+            onClick={(e)=>{
+              e.preventDefault();
+              e.stopPropagation();
+              setIgrac(p);
+              //setKlubZaNovost(aktivniKlub);
+              setOpenEdit(true);
+            }}
+          >
+            <EditRoundedIcon fontSize="small" />
+          </IconButton>
+          <IconButton 
+            className="pk-btn-delete" 
+            size="small" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              //setNovost(n);
+              //setOpenDeleteDialog(true);
+            }}
+          >
+            <DeleteOutlineRoundedIcon fontSize="small"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIgrac(p);
+                setOpenDeleteDialog(true);
+              }}
+             />
+          </IconButton>
+        </div>
+        )}
     </div>
   );
 }
@@ -156,9 +200,9 @@ function Section({ title, players, statHeader, statKey }) {
         .then((response)=>{
             console.log(response.data);
             setIgraci(response.data);
-            if(sport==1)
+            if(Sport==1)
                 setSectionOrder(sectionOrderFudbal);
-            else if (sport==2)
+            else if (Sport==2)
                 setSectionOrder(sectionOrderKosarka);
             else
                 setSectionOrder(sectionOrderVaterpolo);
@@ -187,11 +231,127 @@ function Section({ title, players, statHeader, statKey }) {
 
     return map;
   }, [igraci]);
+  const prazanObjekat={
+  ime: "",
+  prezime: "", 
+  datumPocetkaUgovora: null,
+  datumKrajaUgovora: null,
+  pozicija: "",
+  visina: 0.0, 
+  tezina: 0.0,
+  datumRodjenja: null,
+  listaKlubova: "",
+  brojGodina: 0,
+  klubID: klub ? klub.id : 0 ,
+  takmicenja:""
+}
+  const [noviIgrac,setNoviIgrac] = useState(null);
+  const [openAdding,setOpenAdding] = useState(false);
+  const [openEdit,setOpenEdit]=useState(false);
+  const [openDeleteDialog,setOpenDeleteDialog]=useState(false);
+  const closeDeleteDialogHandler =() =>{
+  setOpenDeleteDialog(false);
+}
+const deleteHandler=()=>{
+  axios.delete(`http://localhost:5146/Klub/ObrsisiIgraca/${klub.id}/${igrac.id}`)
+  .then((resp)=>{
+     setIgraci(prevIgraci => 
+        prevIgraci.filter(i => i.id !== resp.data)
+      );
+    setIgrac(null);
+    setAlert("Upešano je obrisan igrač iz baze");
+    setSeverity("success");
+    setOpenSnack(true);
+     setTimeout(()=>{
+    closeDeleteDialogHandler();
+    },3000)
 
+
+  })
+  .catch((err)=>{
+    setAlert("Neuspešan pokušaj brisanja igrača iz baze",err);
+      setSeverity("error");
+      setOpenSnack(true);
+
+  })
+
+}
+  const handleAdding =() =>{
+    console.log("Ovo saljem backendu");
+    console.log(noviIgrac);
+    axios.post(`http://localhost:5146/Klub/DodajIgracaKlubu/${klub.id}`,noviIgrac)
+    .then((response)=>{
+      setAlert("Igrac je uspesno dodat klubu");
+      setSeverity("success");
+      setIgraci((prev)=>[...prev,response.data]);
+      setIgrac(null);
+      setOpenSnack(true);
+
+    })
+    .catch((err)=>{
+      setAlert("Igrac nije dodat klubu",err);
+      setSeverity("error");
+      setOpenSnack(true);
+
+    })
+  }
+  const handleEdit=()=>{
+    axios.put(`http://localhost:5146/Klub/AzurirajIgracaKluba/${igrac.id}`,igrac)
+    .then((res)=>{
+       setIgraci(prevIgraci => 
+          prevIgraci.map(item => 
+            item.id === res.data.id ? { ...item, ...res.data } : item
+          )
+        );
+        setAlert("Igrac je uspesno modifikovan u bazi");
+        setSeverity("success");
+        setOpenSnack(true);
+
+    })
+    .catch((err)=>{
+       setAlert("Igrac nije izmenjen u bazi",err);
+      setSeverity("error");
+      setOpenSnack(true);
+    })
+
+  }
+  const closeAdding = () => {setNoviIgrac(prazanObjekat );setOpenAdding(false)};
+   const closeEdit = () => {setIgrac(null);setOpenEdit(false)};
   return (
     <div className="sk-wrap">
-      {props.izabraniIgrac===null&&(<div className="sk-card">
+      {!izabraniIgrac &&(<div className="sk-card">
         <div className="sk-top">
+            {klub && (
+                <Button
+                  variant="contained"
+                  onClick={(e)=>{
+                     e.preventDefault();
+                    e.stopPropagation();
+                    setNoviIgrac(prazanObjekat);
+                    setOpenAdding(true);
+                  }}
+                  startIcon={<AddCircleOutlineIcon />}
+                  sx={{
+                    backgroundColor: '#ff7900', // Tvoja narandžasta
+                    color: '#000',
+                    fontWeight: 'bold',
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: '12px',
+                    fontSize: '1rem',
+                    textTransform: 'none', // Da ne bude sve caps lock
+                    boxShadow: '0 4px 14px 0 rgba(255, 121, 0, 0.39)',
+                    '&:hover': {
+                      backgroundColor: '#e66d00',
+                      boxShadow: '0 6px 20px 0 rgba(255, 121, 0, 0.5)',
+                      transform: 'translateY(-2px)',
+                    },
+                    transition: 'all 0.2s ease-in-out',
+                  }}
+                >
+                  DODAJ IGRAČA
+                </Button>
+                        )}
           <div className="sk-title">Sastav</div>
           <div className="sk-subtitle">Grupisano po poziciji</div>
         </div>
@@ -207,10 +367,43 @@ function Section({ title, players, statHeader, statKey }) {
             />
           ))}
         </div>
+         {klub && (
+                  <>
+                  <ModalPage
+                  open={openAdding}
+                  onClose={closeAdding}
+                  data = {noviIgrac}
+                  setData = {setNoviIgrac}
+                  onSubmit = {handleAdding}
+                  tip = {'AddOrEditIgrac'}
+                  podtip = {'Dodaj novog igrača klubu'}
+                  dostupnaTakmicenja={klub.takicenja}
+                  />
+                   <ModalPage
+                  open={openEdit}
+                  onClose={closeEdit}
+                  data = {igrac}
+                  setData = {setIgrac}
+                  onSubmit = {handleEdit}
+                  tip = {'AddOrEditIgrac'}
+                  podtip = {'Izmeni postojećeg igrača kluba'}
+                  dostupnaTakmicenja={klub.takicenja}
+                  />
+                  <DeleteDialog
+                    open = {openDeleteDialog} 
+                    onClose = {closeDeleteDialogHandler} 
+                    onConfirm = {(e)=>{e.preventDefault();deleteHandler()}} 
+                    title = {"Da li ste sigurni da zelite da obrisete datog igrača"} 
+                    description = {"Brisanje igrača će je trajno ukloniti njega iz baze podataka ne samo iz kluba"} 
+                    loading = {false}
+                  />
+                  </>
+         )}
       </div>)}
-      {props.izabraniIgrac!==null&&(
-        <IgracKluba izabraniIgrac={props.izabraniIgrac}/>
+      {izabraniIgrac &&(
+        <IgracKluba izabraniIgrac={izabraniIgrac}/>
       )}
+   
     </div>
   );
 }

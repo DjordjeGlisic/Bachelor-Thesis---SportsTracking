@@ -1,7 +1,17 @@
+using System.Text.Json.Serialization;
 using Models;
 
 namespace DTO
 {
+  public class NovostZaDodavanje
+  {
+      public string Slika { get; set; }
+      public string Naslov { get; set; }
+      public string Sazetak { get; set; }
+      public string Vest { get; set; }
+      public string Autor { get; set; }
+      public DateTime Datum { get; set; }
+  }
   public class NovostZaKorisnika
     {
         public int Id { get; set; }
@@ -69,5 +79,47 @@ namespace DTO
         public int Razlika{get;set;}
         public int Bodovi{get;set;}
         public string  NazivTabele{get;set;}
+  }
+     public class IgracDTO
+    {
+       [JsonPropertyName("ime")]
+        public string Ime{get;set;}
+         [JsonPropertyName("prezime")]
+        public string Prezime{get;set;}
+        [JsonPropertyName("datumPocetkaUgovora")]
+        public DateOnly DatumPocetkaUgovora{get;set;}
+        [JsonPropertyName("datumKrajaUgovora")]
+        public DateOnly DatumKrajaUgovora{get;set;}
+        [JsonPropertyName("datumRodjenja")]
+        public DateOnly DatmRodjenja{get;set;}
+          [JsonPropertyName("pozicija")]
+        public string Pozicija{get;set;}
+        [JsonPropertyName("visina")]
+        public float Visina{get;set;}
+         [JsonPropertyName("tezina")]
+        public float Tezina{get;set;}
+        [JsonPropertyName("takmicenja")]
+        public List<string> Takmicenja{get;set;}=new List<string>();
+        [JsonPropertyName("listaKlubova")]
+        public string ListaKlubova{get;set;}
+
+
+    }
+  public class KlubDTO
+  {
+    public string Adresa{get;set;}
+    public int BrojPratioca{get;set;}
+    public int Id{get;set;}
+    public string Istorija{get;set;}
+    public string Logo{get;set;}
+    public string Naziv{get;set;}
+    public string Prihodi{get;set;}
+    public string Rashodi{get;set;}
+    public string Sponzori{get;set;}
+    public int Sport{get;set;}
+    public List<string> Takicenja{get;set;}=new List<string>();
+    public string Trofeji{get;set;}
+    public string Username{get;set;}
+    
   }
 }
