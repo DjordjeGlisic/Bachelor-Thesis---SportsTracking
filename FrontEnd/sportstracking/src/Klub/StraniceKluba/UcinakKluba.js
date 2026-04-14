@@ -124,19 +124,23 @@ export default function UcinakKluba() {
     if (utakmica<now) return { text: "Odigrano", cls: "ft" };
     return { text: "Predstoji", cls: "upcoming" };
   };
-const [sezone,setSezone]=useState("2025/26");
+const [sezone,setSezone]=useState("2025/2026");
 const [tabela,setTabela]=useState(null);
-const nizSezona=[
-    "2025/26",
-    "2024/25",
-    "2023/24",
-    "2022/23",
-    "2021/22",
-    
-    
-    
-    
-];
+function vratiPoslednjihNSezona(n = 5) {
+    const danas = new Date();
+    const trenutnaGodina = danas.getFullYear();
+    const trenutniMesec = danas.getMonth() + 1;
+    const pocetnaGodina = trenutniMesec >= 8 ? trenutnaGodina : trenutnaGodina - 1;
+    const sezone = [];
+    for (let i = 0; i < n; i++) {
+        const g = pocetnaGodina - i;
+        sezone.push(`${g}/${g + 1}`);
+    }
+
+    return sezone;
+}
+
+ const nizSezona= vratiPoslednjihNSezona(5);
  function formatDateTime(ts) {
   return new Intl.DateTimeFormat("sr-RS", {
     day: "2-digit",
@@ -299,35 +303,35 @@ useEffect(()=>{
               <div className="kmks-rightStats">
                 {"prosecnoSuteva" in s && (
                   <div className="kmks-metric">
-                    <div className="kmks-val">{s.prosecnoSuteva}</div>
+                    <div className="kmks-val">{s.prosecnoSuteva.toFixed(2)}</div>
                     <div className="kmks-lab">Prosečno šuteva</div>
                   </div>
                 )}
 
                 {"prosecnoOkvir" in s && (
                   <div className="kmks-metric">
-                    <div className="kmks-val">{s.prosecnoOkvir}</div>
+                    <div className="kmks-val">{s.prosecnoOkvir.toFixed(2)}</div>
                     <div className="kmks-lab">Prosečno šuteva u okvir gola</div>
                   </div>
                 )}
 
                 {"prosecnoGolova" in s && (
                   <div className="kmks-metric">
-                    <div className="kmks-val">{s.prosecnoGolova}</div>
+                    <div className="kmks-val">{s.prosecnoGolova.toFixed(2)}</div>
                     <div className="kmks-lab">Prosečno golova</div>
                   </div>
                 )}
 
                 {"prosecnoPosed" in s && (
                   <div className="kmks-metric">
-                    <div className="kmks-val">{s.prosecnoPosed}%</div>
+                    <div className="kmks-val">{s.prosecnoPosed.toFixed(2)}%</div>
                     <div className="kmks-lab">Prosečan posed </div>
                   </div>
                 )}
 
                 {"prosecnoPreciznost" in s && (
                   <div className="kmks-metric">
-                    <div className="kmks-val">{s.prosecnoPreciznost}%</div>
+                    <div className="kmks-val">{s.prosecnoPreciznost.toFixed(2)}%</div>
                     <div className="kmks-lab">Prosečna preciznost </div>
                   </div>
                 )}
@@ -335,7 +339,7 @@ useEffect(()=>{
                 {"prosecnoZuti" in s && (
                   <div className="kmks-metric">
                     <div className="kmks-val">
-                      <span className="kmks-cardIcon yellow" /> {s.prosecnoZuti}
+                      <span className="kmks-cardIcon yellow" /> {s.prosecnoZuti.toFixed(2)}
                     </div>
                     <div className="kmks-lab">Žuti kartoni u proseku</div>
                   </div>
@@ -344,7 +348,7 @@ useEffect(()=>{
                 {"prosecnoCrveni" in s && (
                   <div className="kmks-metric">
                     <div className="kmks-val">
-                      <span className="kmks-cardIcon red" /> {s.prosecnoCrveni}
+                      <span className="kmks-cardIcon red" /> {s.prosecnoCrveni.toFixed(2)}
                     </div>
                     <div className="kmks-lab">Crveni kartoni u proseku</div>
                   </div>
@@ -498,13 +502,26 @@ useEffect(()=>{
           </div>
           <div className="kmks-card">
             <div className="tabela-card">
-                    {(tabela!==null&&(sport===1||sport===3))&&(
+                    {(tabela!==null&&(sport===1))&&(
                   <div className="tabela-header-row">
                     <div className="col-pos">#</div>
                     <div className="col-club">Klub</div>
                     <div className="col-num">OU</div>
                     <div className="col-num">P</div>
                     <div className="col-num">N</div>
+                    <div className="col-num">I</div>
+                    <div className="col-num">DG</div>
+                    <div className="col-num">PG</div>
+                    <div className="col-num">GR</div>
+                    <div className="col-num">Bod</div>
+                    
+                  </div>)}
+                   {(tabela!==null&&(sport===3))&&(
+                  <div className="tabela-header-row">
+                    <div className="col-pos">#</div>
+                    <div className="col-club">Klub</div>
+                    <div className="col-num">OU</div>
+                    <div className="col-num">P</div>
                     <div className="col-num">I</div>
                     <div className="col-num">DG</div>
                     <div className="col-num">PG</div>
@@ -542,7 +559,7 @@ useEffect(()=>{
                         </div>
                         <div className="col-num">{row.odigrane}</div>
                         <div className="col-num">{row.pobeda}</div>
-                        {sport!==2&&(<div className="col-num">{row.neresene}</div>)}
+                        {sport===1&&(<div className="col-num">{row.neresene}</div>)}
                         <div className="col-num">{row.porazi}</div>
                         <div className="col-num">{row.datiPoeni}</div>
                         <div className="col-num">{row.primljeniPoeni}</div>

@@ -142,9 +142,9 @@ const KarticaKlub = (props) => {
           )}
           { (korisnik && korisnik.isAdmin) && (
           <>
-          <button className="club-btn club-btn-secondary"onClick={()=>{console.log(props.obj);localStorage.setItem("izabraniKlub",JSON.stringify(props.obj));setIzabraniKlub(props.obj);setRuta('/Klub');navigate("../Klub")}}>Izmeni osnovne podatke</button>
-          <button className="club-btn club-btn-primary" onClick={pracenjeHandler}>Izmeni gde se takmiči</button>
-          <button className="club-btn club-btn-secondary" onClick={(e)=>{e.preventDefault();korisnik===null||props.obj.korisnikPrati===false?Obavestenje():Redirekcija()}}>Obriši klub</button>
+          <button className="club-btn club-btn-secondary"onClick={()=>{props.setKlubZaIzmenu(props.obj);setRuta('/Klub');props.setOpenBasicModal(true)}}>Izmeni osnovne podatke</button>
+          <button className="club-btn club-btn-primary" onClick={()=>{props.setKlubZaIzmenu(props.obj);setRuta('/Klub');props.setOpenEditModal(true);}}>Izmeni gde se takmiči</button>
+          <button className="club-btn club-btn-secondary" onClick={(e)=>{e.preventDefault();setRuta('/Klub');props.setKlubZaIzmenu(props.obj);props.setOpenDeleteModal(true)}}>Obriši klub</button>
           </>
           )}
         </div>

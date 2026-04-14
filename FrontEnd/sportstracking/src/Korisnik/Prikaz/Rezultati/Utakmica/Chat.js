@@ -167,7 +167,7 @@ useEffect(() => {
         )}
       </div>
 
-     
+     {utakmica.uzivo && (
       <form className="chat-input-bar" >
         
 
@@ -189,7 +189,7 @@ useEffect(() => {
         >
           ➤
         </button>
-      </form>
+      </form>)}
     </div>
   );
 };

@@ -73,7 +73,7 @@ const statistikaFudbal=()=>{
           <div className="ik-stat"><strong>{stat.vraceniPosedi}</strong><span>VRAĆENIH POSEDA</span></div>
           <div className="ik-stat"><strong>{stat.dodavanja}</strong><span>DODAVANJA</span></div>
           <div className="ik-stat"><strong>{stat.tacna}</strong><span>TAČNA DODAVANJA</span></div>
-          <div className="ik-stat"><strong>{stat.uspesnostDodavanja}</strong><span>USPEŠNOST DODAVANJA%</span></div>
+          <div className="ik-stat"><strong>{stat.uspesnostDodavanja.toFixed(2)}</strong><span>USPEŠNOST DODAVANJA%</span></div>
           <div className="ik-stat"><strong>{stat.predjeno}KM</strong><span>PREĐENA KILOMETRAŽA</span></div>
           
           <div className="ik-stat"><strong>{stat.indeks}</strong><span>INDEKS</span></div>

@@ -28,6 +28,8 @@ namespace Services
        Task<List<KluboviZaPocetnu>> VratiNajskorijeRezultateKlubovaSvimTakmicenjimaAsync(int korisnikID,bool prijavljen,SportType sport);
       Task<ReactionResult> LajkujIliDislajkujVestAsync(int korisnikID, int vestID, bool lajk);
       Task<object>VratiKlubAsync(SportType sport,string nazivKlubaint,int? korisnikID);
+      Task<UcinakObeStrane> VratiUcinakIgracaKlubaZaUtakmicuAsync(int utakmicaID,SportType sport);
+      Task<int> VratiMinutUtakmiceAsync(int utakmicaID);
        
     }
     

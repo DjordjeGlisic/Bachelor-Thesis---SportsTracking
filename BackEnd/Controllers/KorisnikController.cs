@@ -87,7 +87,7 @@ namespace Controllers
             }
             catch
             {
-                return BadRequest(new { message = "Nema takmicenja za izabrani sport." });
+                return BadRequest(new { message = "Nema tog kola za izabrano takmičenje." });
                 
             } 
         }
@@ -449,6 +449,35 @@ namespace Controllers
             {
                 var result = await _korisnikService.LajkujIliDislajkujVestAsync(korisnikID,vestID,lajk);
                 return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("VratiStatistikuIgracaZaUtakmicu/{utakmicaID}/{sport}")]
+        public async Task<IActionResult> VratiStatistikuIgracaZaUtakmicu([FromRoute]int utakmicaID,[FromRoute]int sport)
+        {
+            try
+            {
+                SportType Sport = sport == 1 ? SportType.Fudbal : sport == 2 ? SportType.Kosarka : SportType.Vaterpolo;
+                var res = await _korisnikService.VratiUcinakIgracaKlubaZaUtakmicuAsync(utakmicaID,Sport);
+                return Ok(res);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("VratiMinutUtakmice/{utakmicaID}")]
+        public async Task<IActionResult> VratiMinutUtakmiceAsync([FromRoute]int utakmicaID)
+        {
+            try
+            {
+                var res = await _korisnikService.VratiMinutUtakmiceAsync(utakmicaID);
+                return Ok(res);
             }
             catch(Exception ex)
             {

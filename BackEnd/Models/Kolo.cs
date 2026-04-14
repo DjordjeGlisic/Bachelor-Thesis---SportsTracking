@@ -13,10 +13,10 @@ namespace Models
         public int Id { get; set; }
         [Required]
         public int BrojKola { get; set; } 
-        [Required]
-        public DateTime PocetakKola { get; set; }
-        [Required]
-        public DateTime KrajKola { get; set; }
+       
+        public DateTime? PocetakKola { get; set; }
+      
+        public DateTime? KrajKola { get; set; }
         [Required]
         public KoloType TipKola { get; set; }
         //VEZE

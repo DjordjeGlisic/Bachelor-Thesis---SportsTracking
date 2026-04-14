@@ -11,6 +11,7 @@ import Klubovi from './Korisnik/Prikaz/Klubovi/Klubovi';
 import Inbox from './Inbox/Inbox';
 import GlavniPrikaz from './Korisnik/Prikaz/Novosti/GlavniPrikaz';
 import HeaderKluba from './Klub/HeaderKluba';
+import Transferi from './Admin/Transferi';
 
 
 function App() {
@@ -89,6 +90,14 @@ const [modal,setModal]=useState(false);
             <>
            <HeaderKluba/>
         </>} />
+        {korisnik && korisnik.isAdmin && (
+          <Route path='/Transferi' element = {
+              <>
+                <Transferi/>
+              </>
+
+            }/>
+        )}
                 
         </Routes>
     </div>

@@ -139,6 +139,35 @@ namespace DTO
         public bool LikedByMe { get; set; }
         public bool DislikedByMe { get; set; }
     }
- 
+    public class UcinakIgracaNaUtakmici
+    {
+        public bool IgraUtakmicu { get; set; }
+        public int Pogotci { get; set; }
+        public int Asistencije { get; set; }
+        public int UkupnoSuteva{get;set;}
+        public int IndeksKorisnosti { get; set; }
+        public int? IzgubljeneLopte { get; set; }
+        public int? UkradeneLopte { get; set; }
+        public int? BlokiraniUdarci { get; set; }
+        public int? VraceniPosedi { get; set; }
+        public int? UkupnoDodavanja { get; set; }
+        public int? UkupnoTacnihDodavanja { get; set; }
+        public int? PredjenaDistancaKM { get; set; }
+        public int? Skokovi{get;set;}
+        public int? SkokoviOF{get;set;}
+        public int? SkokoviDF{get;set;}
+        public int? Iskljucenja{get;set;}
+        public int? UkupnoFaula{get;set;}
+        public bool?CrveniKartoni{get;set;}
+        public bool?ZutiKartoni{get;set;}
+        public string ImePrezime{get;set;}
+        public int IgracId { get; set; }
+    }
+    public class UcinakObeStrane
+    {
+        public List<UcinakIgracaNaUtakmici> Domacin{get;set;} = new List<UcinakIgracaNaUtakmici>();
+        public List<UcinakIgracaNaUtakmici> Gost{get;set;} = new List<UcinakIgracaNaUtakmici>();
+        
+    }
 }
 

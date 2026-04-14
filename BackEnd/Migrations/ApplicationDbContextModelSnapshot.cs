@@ -90,7 +90,7 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("KlubID")
+                    b.Property<int?>("KlubID")
                         .HasColumnType("integer");
 
                     b.Property<string>("ListaKlubova")
@@ -104,6 +104,9 @@ namespace BackEnd.Migrations
                     b.Property<string>("Prezime")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Sport")
+                        .HasColumnType("integer");
 
                     b.Property<float>("Tezina")
                         .HasColumnType("real");
@@ -185,10 +188,10 @@ namespace BackEnd.Migrations
                     b.Property<int>("BrojKola")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("KrajKola")
+                    b.Property<DateTime?>("KrajKola")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("PocetakKola")
+                    b.Property<DateTime?>("PocetakKola")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Sezona")
@@ -391,8 +394,8 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("Drzava")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("LogoURL")
                         .IsRequired()
@@ -404,8 +407,8 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("Opis")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("Sport")
                         .HasColumnType("integer");
@@ -533,8 +536,11 @@ namespace BackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StatistikaId")
+                    b.Property<int?>("StatistikaId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
 
                     b.Property<bool>("Uzivo")
                         .HasColumnType("boolean");
@@ -670,6 +676,9 @@ namespace BackEnd.Migrations
                 {
                     b.HasBaseType("Models.Statistika");
 
+                    b.Property<bool>("IgraniPeterci")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("IskljucenjaDomacin")
                         .HasColumnType("integer");
 
@@ -731,8 +740,7 @@ namespace BackEnd.Migrations
                     b.HasOne("Models.Klub", "Klub")
                         .WithMany("Igraci")
                         .HasForeignKey("KlubID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Klub");
                 });
@@ -849,8 +857,7 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("Models.Utakmica", b =>
                 {
-                    b.Navigation("Statistika")
-                        .IsRequired();
+                    b.Navigation("Statistika");
                 });
 #pragma warning restore 612, 618
         }

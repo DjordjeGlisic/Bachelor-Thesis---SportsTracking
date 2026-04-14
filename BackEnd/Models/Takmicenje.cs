@@ -18,10 +18,10 @@ namespace Models
         [Required]
         public string LogoURL { get; set; }
         [Required]
-        [MaxLength(20)]
+        [MaxLength(50)]
         public string Opis{get;set;}
         [Required]
-        [MaxLength(10)]
+        [MaxLength(50)]
         public string Drzava{get;set;}
         
         //VEZE

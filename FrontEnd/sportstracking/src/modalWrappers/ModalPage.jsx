@@ -3,7 +3,15 @@ import CloseIcon from "@mui/icons-material/Close"
 import AddOrEditNovost from "../Klub/AdminModali/AddOrEditNovost";
 import AddOrEditIgrac from "../Klub/AdminModali/AddOrEditIgrac";
 import EditKlubInfo from "../Klub/AdminModali/EditKlubInfo";
-const ModalPage = ({open,onClose,data,setData,onSubmit,tip,setSelectedFile,selectedFile,podtip,dostupnaTakmicenja,parseMoneyToNumber}) =>
+import AddOrEditKlub from "../Admin/AddOrEditKlub";
+import UcinakKlubaZaTakmicenje from "../Admin/UcinakKlubaZaTakmicenje";
+import TransferForma from "../Admin/TransferForma";
+import AddOrEditTakmicenje from "../Admin/AddOrEditTakmicenje";
+import AddOrEditSekcija from "../Admin/AddOrEditSekcija";
+import AddNewMatch from "../Admin/AddNewMatch";
+const ModalPage = ({open,onClose,data,setData,onSubmit,tip,setSelectedFile,selectedFile,podtip,dostupnaTakmicenja,parseMoneyToNumber,sport,kliknutUcinak,idTakmicenja
+    ,setOpenSnack,setTip,setPoruka,onDodavanje,ukloniPostojecuSekciju,onEdit,onIzmena,dodavanje,izborKlubova,labelKolo
+}) =>
 {
   
     console.log(data);
@@ -89,6 +97,92 @@ const ModalPage = ({open,onClose,data,setData,onSubmit,tip,setSelectedFile,selec
                         onClose();
                         }} 
                     />
+                    )}
+                     {tip === 'AddOrEditGeneralClub'&& (
+                    <AddOrEditKlub
+                        data={data} 
+                        setData = {setData}
+                        podtip = {podtip}
+                        selectedFile = { selectedFile }
+                        setSelectedFile = {setSelectedFile }
+                        onSubmit={() => {
+                        onSubmit();
+                        }} 
+                    />
+
+                )}
+                {tip==="UcinakKlubaZaTakmicenje" &&(
+                    <UcinakKlubaZaTakmicenje
+                        data={data} 
+                        setData = {setData}
+                        podtip = {podtip}
+                        sport = {sport}
+                        onClose= {onClose}
+                        kliknutUcinak={kliknutUcinak} 
+                        idTakmicenja={idTakmicenja}
+                    />
+                )}
+                {tip==="TransferForPlayer"&&(
+                    <TransferForma
+                        data = {data}
+                        setData = {setData}
+                        podtip = {podtip}
+                        sport = {sport}
+                         onClose= {onClose}
+                         setOpenSnack={setOpenSnack}
+                        setTip = {setTip}
+                        setPoruka = {setPoruka}
+                        onSubmit = {onSubmit}
+                        
+
+                    />
+                )}
+                {tip === 'AddOrEditGeneralTakmicenje'&& (
+                <AddOrEditTakmicenje
+                    onClose= {onClose}
+                    data = {data}
+                    setData = {setData}
+                    onDodavanje = {onDodavanje}
+                    onIzmena = {onIzmena}
+                    setSelectedFile={setSelectedFile}
+                    selectedFile = {selectedFile}
+                    podtip = {podtip}
+                    setOpenSnack={ setOpenSnack}
+                    setTip = {setTip}
+                    setPoruka = {setPoruka}
+                />
+
+                )}
+                 {tip === 'AddOrEditSekcijaTakmicenja'&& (
+                <AddOrEditSekcija
+                    onClose= {onClose}
+                    data = {data}
+                    setData = {setData}
+                    onSubmit = {onSubmit}
+                    podtip = {podtip}
+                    setOpenSnack={ setOpenSnack}
+                    setTip = {setTip}
+                    setPoruka = {setPoruka}
+                    dodavanje = {dodavanje}
+                    ukloniPostojecuSekciju = {ukloniPostojecuSekciju}
+                    onEdit = {onEdit}
+                />
+
+                )}
+                {tip === 'AddNewMatch'&& (
+                <AddNewMatch
+                onClose = {onClose}
+                open = {open}
+                data = {data}
+                setData = {setData}
+                labelKolo = {labelKolo}
+                onDodavanje = {onDodavanje}
+                podtip = {podtip}
+                setOpenSnack={ setOpenSnack}
+                setTip = {setTip}
+                setPoruka = {setPoruka}
+                izborKlubova = {izborKlubova}
+                />
 
                 )}
         

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Strukture;
 
 namespace Models
@@ -34,6 +35,7 @@ namespace Models
         public Takmicenje Takmicenje { get; set; }
         [Required]
         public int TakmicenjeId { get; set; }
+        [JsonIgnore]
         public Klub Klub { get; set; }
         [Required]
         public int KlubId { get; set; }

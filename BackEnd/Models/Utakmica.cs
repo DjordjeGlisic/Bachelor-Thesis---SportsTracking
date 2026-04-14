@@ -23,15 +23,15 @@ namespace Models
         
         [Required]
         public string Rezultat { get; set; }
+        public string? Status{get;set;}
       
         
         //VEZE
           public Kolo Kolo { get; set; }
         [Required]
         public int KoloId { get; set; }
-        public Statistika Statistika { get; set; }
-        [Required]
-        public int StatistikaId { get; set; }
+        public Statistika? Statistika { get; set; }
+        public int? StatistikaId { get; set; }
 
 
     }

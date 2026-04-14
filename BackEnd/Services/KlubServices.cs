@@ -31,7 +31,10 @@ namespace Services
             var now=DateTime.UtcNow;
             if(klub==null)
                 throw new Exception("Klub nije pronadjen");
-          var utakmice=await _context.Set<Utakmica>().Where(u=>u.Kolo.Takmicenje.Sport==klub.Sport && (u.Domacin==klub.Naziv || u.Gost==klub.Naziv)&&(u.Uzivo==false&&u.DatumPocetkaUtakmice<now))
+          var utakmice=await _context.Set<Utakmica>()
+          .Where(u=>u.Kolo.Takmicenje.Sport==klub.Sport
+           && (u.Domacin==klub.Naziv || u.Gost==klub.Naziv)
+           && u.Status=="ODIGRANO")
           .OrderByDescending(p=>p.DatumPocetkaUtakmice)
           .Take(5)
           .Select(p => new
@@ -152,7 +155,9 @@ namespace Services
             var klub=await _context.Klubovi.FindAsync(klubId);
             if(klub==null)
                 throw new Exception("Klub nije pronadjen");
-            var sastav=await _context.Set<Igrac>().Where(s=>s.KlubID==klubId).ToListAsync();
+            var sastav=await _context.Set<Igrac>()
+            .Include(x => x.Ucinci)
+            .Where(s=>s.KlubID==klubId).ToListAsync();
             var res=new List<SastavKluba>();
             foreach(var s in sastav)
             {
@@ -622,6 +627,7 @@ namespace Services
                 ListaKlubova=igrac.ListaKlubova,
                 BrojGodina = godine,
                 Klub  = postojiKlub,
+                Sport = postojiKlub.Sport,
                 KlubID = postojiKlub.Id, 
 
             };
@@ -677,7 +683,7 @@ namespace Services
                 DatumRodjenja = toAddIgrac.DatumRodjenja,
                 ListaKlubova =  toAddIgrac.ListaKlubova,
                 BrojGodina = toAddIgrac.BrojGodina,
-                KlubID = toAddIgrac.KlubID,
+                KlubID = (int)toAddIgrac.KlubID,
                 IndeksniRejting=toAddIgrac.Ucinci.Where(p=>p.IgracId==toAddIgrac.Id).OrderByDescending(p=>p.Sezona).Select(p=>p.IndeksKorisnosti).FirstOrDefault()
 
 
@@ -713,7 +719,7 @@ namespace Services
                 DatumRodjenja = postojiIgrac.DatumRodjenja,
                 ListaKlubova =  postojiIgrac.ListaKlubova,
                 BrojGodina = postojiIgrac.BrojGodina,
-                KlubID = postojiIgrac.KlubID,
+                KlubID =(int) postojiIgrac.KlubID,
                 IndeksniRejting=postojiIgrac.Ucinci.Where(p=>p.IgracId==postojiIgrac.Id).OrderByDescending(p=>p.Sezona).Select(p=>p.IndeksKorisnosti).FirstOrDefault()
 
 

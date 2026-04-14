@@ -66,7 +66,7 @@ const Tabela = (props) => {
                 .map((key, j) => (
                 
                 <div className="et-col " key={j}>
-                  {row[key]}
+                  {key==="procenat" ? row[key].toFixed(2) : row[key]}
                 </div>
                 
               ))}

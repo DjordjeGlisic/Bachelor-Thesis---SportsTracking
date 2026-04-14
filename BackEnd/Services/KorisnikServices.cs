@@ -168,13 +168,15 @@ namespace Services
             {
                 Id = u.Id,
                 Domacin = u.Domacin,
+                DomLogo = "",
+                GosLogo = "",
                 Datum=u.DatumPocetkaUtakmice,
                 Gost = u.Gost,
                 Uzivo = u.Uzivo,
-                
+                Status = u.Status,
                 Rezultat = u.Rezultat,
-                Vreme=u.Statistika.TrenutniMinut,
-                ListaStrelaca=u.Statistika.ListaStrelaca,
+                Vreme = u.Statistika != null ? u.Statistika.TrenutniMinut : 0,
+                ListaStrelaca= u .Statistika != null ? u.Statistika.ListaStrelaca : "",
                 Lokacija=u.Lokacija
             }).ToList()
         })
@@ -182,8 +184,7 @@ namespace Services
 
         if (kolo == null)
             throw new Exception("Ne postoji kolo sa tim brojem u izabranom takmicenju.");
-
-            return new OkObjectResult(kolo);
+        return new OkObjectResult(kolo);
         }
  public async Task<object?> VratiStatistikuUtakmiceAsync(int utakmicaID, SportType sportType)
 {
@@ -387,35 +388,30 @@ namespace Services
         })
         .OrderByDescending(p=>p.Bodovi)
         .ToListAsync();
-
-    var kola = await _context.Set<Kolo>()
-        .Where(p => p.TakmicenjeId == takmicenjeID && p.Sezona == s)
-        .Include(k => k.Utakmice)
-        .OrderBy(p => p.PocetakKola)
-        .ToListAsync();
-
     foreach (var red in tabela)
     {
-        int i = 0;
+         var utakmiceKluba = await _context.Set<Utakmica>()
+        .Include(x => x.Kolo)
+        .ThenInclude(x => x.Takmicenje)
+        .Where(p => p.Kolo.TakmicenjeId == takmicenjeID
+        && (p.Domacin == red.Klub || p.Gost == red.Klub)
+        && p.Status == "ODIGRANO")
+        .OrderByDescending(p => p.DatumPocetkaUtakmice)
+        .Take(5)
+        .ToListAsync();
+        var reverseUtakmice = utakmiceKluba.OrderBy(x => x.DatumPocetkaUtakmice).ToList();
 
-        foreach (var kolo in kola)
+        foreach (var utakmica in reverseUtakmice)
         {
-            if (i == 4) break;
-
-            var utakmica = kolo.Utakmice
-                .FirstOrDefault(p => p.Domacin == red.Klub || p.Gost == red.Klub);
-
+           
             if (utakmica == null || string.IsNullOrWhiteSpace(utakmica.Rezultat))
                 continue;
-
             var delovi = utakmica.Rezultat.Split(':');
             if (delovi.Length != 2) continue;
-
             if (!int.TryParse(delovi[0], out var pogotciDomacin)) continue;
             if (!int.TryParse(delovi[1], out var pogotciGost)) continue;
-
-            if (utakmica.Domacin == red.Klub && pogotciDomacin > pogotciGost ||
-                utakmica.Gost == red.Klub && pogotciGost > pogotciDomacin)
+            if (utakmica.Domacin == red.Klub && pogotciDomacin > pogotciGost
+            || utakmica.Gost == red.Klub && pogotciGost > pogotciDomacin)
             {
                 red.PoslednjihPet.Add(3);
             }
@@ -427,8 +423,6 @@ namespace Services
             {
                 red.PoslednjihPet.Add(0);
             }
-
-            i++;
         }
     }
 
@@ -635,7 +629,7 @@ public async Task<List<object>> VratiIgracePoKriterijumuAsync(int takmicenjeId,i
                                         UkupnoUtakmica=koliko,
                                         Golovi=p.Pogotci,
                                         Sutevi=p.UkupnoSuteva,
-                                        Procenat=p.UkupnoSuteva!=0?(p.Pogotci/p.UkupnoSuteva)*100:0
+                                        Procenat=p.UkupnoSuteva!=0?(((double)p.Pogotci/(double)p.UkupnoSuteva)*100):0.0f
                                     })
                                     .OrderByDescending(p=>p.Golovi)
                                     .Take(20)
@@ -655,7 +649,7 @@ public async Task<List<object>> VratiIgracePoKriterijumuAsync(int takmicenjeId,i
                                         UkupnoUtakmica=koliko,
                                         Tacni=p.UkupnoTacnihDodavanja,
                                         UkupnoDod=p.UkupnoDodavanja,
-                                        Procenat=p.UkupnoDodavanja!=0?(p.UkupnoTacnihDodavanja/p.UkupnoDodavanja)*100:0
+                                        Procenat=p.UkupnoDodavanja!=0?(((double)p.UkupnoTacnihDodavanja/(double)p.UkupnoDodavanja)*100):0.0f
                                     })
                                     .OrderByDescending(p=>p.UkupnoDod)
                                     .Take(20)
@@ -706,13 +700,12 @@ public async Task<List<object>> VratiIgracePoKriterijumuAsync(int takmicenjeId,i
                                         OfanzivniPoMecu=p.OdigraneUtakmice==0?0:Math.Round((decimal)p.SkokoviOF/p.OdigraneUtakmice,2),
                                         Defanzivni=p.OdigraneUtakmice==0?0:Math.Round((decimal)p.SkokoviDF/p.OdigraneUtakmice,2),
                                         UkupnoSuteva=p.UkupnoSuteva,
-                                        ProcenatSuteva=p.UkupnoSuteva==0?0:Math.Round((((decimal)p.Pogotci/2)/p.UkupnoSuteva)*100,2),
+                                        ProcenatSuteva=p.UkupnoSuteva==0?0:Math.Round(((((decimal)p.Pogotci/2)/(decimal)p.UkupnoSuteva)*100),2),
                                         Fauli=p.UkupnoFaula,
                                         Blokade=p.BlokiraniUdarci,
                                         Izgubljene=p.IzgubljeneLopte,
                                         Ukradene=p.UkradeneLopte,
                                         IndeksKorisnosti=p.OdigraneUtakmice==0?0:Math.Round((decimal)p.IndeksKorisnosti/p.OdigraneUtakmice,2)
-
                                     })
                                     .OrderBy(p=>p.Klub)
                                     .ToListAsync();
@@ -741,10 +734,6 @@ public async Task<List<object>> VratiIgracePoKriterijumuAsync(int takmicenjeId,i
                                         IzgubljeneLopteIndeks=0-p.IzgubljeneLopte,
                                         FerPlejIndeks=p.UkupnoFaula==null?0:(int)(0-p.UkupnoFaula),
                                         IndeksKorisnostiPoMecu=p.OdigraneUtakmice==0?0:Math.Round((decimal)p.IndeksKorisnosti/p.OdigraneUtakmice,2)
-
-
-
-                                        
                                     })
                                     .OrderByDescending(p=>p.IndeksKorisnostiPoMecu)
                                     .Take(20)
@@ -767,14 +756,8 @@ public async Task<List<object>> VratiIgracePoKriterijumuAsync(int takmicenjeId,i
                                         UkupnoUtakmica=koliko,
                                         UkupnoPoena=p.Pogotci,
                                         UkupnoSuteva=p.UkupnoSuteva,
-                                        ProcenatSuta=p.UkupnoSuteva==0?0:Math.Round(( ((decimal)p.Pogotci/2)/p.UkupnoSuteva)*100,2),
+                                        ProcenatSuta=p.UkupnoSuteva==0?0:Math.Round(( (((decimal)p.Pogotci/2)/(decimal)p.UkupnoSuteva)*100),2),
                                         ProsecnoPoena=p.OdigraneUtakmice==0?0:Math.Round(((decimal)p.Pogotci/p.OdigraneUtakmice),2)
-
-
-
-
-
-                                        
                                     })
                                     .OrderByDescending(p=>p.ProsecnoPoena)
                                     .Take(20)
@@ -1196,7 +1179,7 @@ public async Task ZapratiKlubAsync(int korisnikID,int klubID)
     await _context.SaveChangesAsync();
     
 }
-    public async Task OtpratiKlubAsync(int korisnikID,int klubID)
+public async Task OtpratiKlubAsync(int korisnikID,int klubID)
     {
     var postojiKorisnik=await _context.Set<Korisnik>().Include(p=>p.PraceniKlubovi).FirstOrDefaultAsync(p=>p.Id==korisnikID);
     if(postojiKorisnik==null)
@@ -1217,7 +1200,7 @@ public async Task ZapratiKlubAsync(int korisnikID,int klubID)
     
             
     }
-   public async Task<List<PorukaKlubKorisnik>> VratiChatKlubKorisnikAsync(int korisnikID,int klubID,int sport)
+public async Task<List<PorukaKlubKorisnik>> VratiChatKlubKorisnikAsync(int korisnikID,int klubID,int sport)
         {
             
                
@@ -1542,92 +1525,205 @@ public async Task ZapratiKlubAsync(int korisnikID,int klubID)
             return lista;
         }
 
-   public async Task<ReactionResult> LajkujIliDislajkujVestAsync(int korisnikID, int vestID, bool lajk)
-{
-   
-    var postoji = await _context.Set<Korisnik>().AnyAsync(k => k.Id == korisnikID);
-    if (!postoji) throw new Exception("ID korisnika nije pronadjen");
-
-    var vestPostoji = await _context.Set<Novosti>().AnyAsync(v => v.Id == vestID);
-    if (!vestPostoji) throw new Exception("ID vesti nije pronadjen");
-
-    var key = (RedisKey)$"vest:{vestID}";
-
-    for (int attempt = 0; attempt < 5; attempt++)
+    public async Task<ReactionResult> LajkujIliDislajkujVestAsync(int korisnikID, int vestID, bool lajk)
     {
-        
-        var tran = _db.CreateTransaction();
-      
-        var current = await _db.StringGetAsync(key);
+    
+        var postoji = await _context.Set<Korisnik>().AnyAsync(k => k.Id == korisnikID);
+        if (!postoji) throw new Exception("ID korisnika nije pronadjen");
 
-        tran.AddCondition(Condition.StringEqual(key, current));
+        var vestPostoji = await _context.Set<Novosti>().AnyAsync(v => v.Id == vestID);
+        if (!vestPostoji) throw new Exception("ID vesti nije pronadjen");
 
-        StatistikaNovosti stat;
-        if (!current.IsNullOrEmpty)
+        var key = (RedisKey)$"vest:{vestID}";
+
+        for (int attempt = 0; attempt < 5; attempt++)
         {
-            stat = JsonConvert.DeserializeObject<StatistikaNovosti>(current!) ?? new StatistikaNovosti();
-        }
-        else
-        {
-            stat = new StatistikaNovosti
-            {
-                Id = vestID,
-                IdKorisnikaKojiLajkuju = new List<int>(),
-                IdKorisnikaKojiDislajkuju = new List<int>()
-            };
-        }
-
-        stat.IdKorisnikaKojiLajkuju ??= new List<int>();
-        stat.IdKorisnikaKojiDislajkuju ??= new List<int>();
-
-        // (2) toggle + uklanjanje iz suprotne liste
-        if (lajk)
-        {
-            stat.IdKorisnikaKojiDislajkuju.Remove(korisnikID);
-
-            if (stat.IdKorisnikaKojiLajkuju.Contains(korisnikID))
-                stat.IdKorisnikaKojiLajkuju.Remove(korisnikID); // toggle off
-            else
-                stat.IdKorisnikaKojiLajkuju.Add(korisnikID);
-        }
-        else
-        {
-            stat.IdKorisnikaKojiLajkuju.Remove(korisnikID);
-
-            if (stat.IdKorisnikaKojiDislajkuju.Contains(korisnikID))
-                stat.IdKorisnikaKojiDislajkuju.Remove(korisnikID); // toggle off
-            else
-                stat.IdKorisnikaKojiDislajkuju.Add(korisnikID);
-        }
-
-        // (3) upis kroz transakciju
-        var json = JsonConvert.SerializeObject(stat);
-        _ = tran.StringSetAsync(key, json);
-
-        bool ok = await tran.ExecuteAsync();
-        if (ok)
-        {
-            var novost=await _context.Set<Novosti>().FirstOrDefaultAsync(n => n.Id == vestID);
-            novost.BrojDislajkova = stat.IdKorisnikaKojiDislajkuju.Count;
-            novost.BrojLajkova = stat.IdKorisnikaKojiLajkuju.Count;
             
-             await _context.SaveChangesAsync();
-            return new ReactionResult
+            var tran = _db.CreateTransaction();
+        
+            var current = await _db.StringGetAsync(key);
+
+            tran.AddCondition(Condition.StringEqual(key, current));
+
+            StatistikaNovosti stat;
+            if (!current.IsNullOrEmpty)
             {
-                VestId = vestID,
-                Likes = stat.IdKorisnikaKojiLajkuju.Count,
-                Dislikes = stat.IdKorisnikaKojiDislajkuju.Count,
-               
-                LikedByMe = stat.IdKorisnikaKojiLajkuju.Contains(korisnikID),
-                DislikedByMe = stat.IdKorisnikaKojiDislajkuju.Contains(korisnikID),
-            };
+                stat = JsonConvert.DeserializeObject<StatistikaNovosti>(current!) ?? new StatistikaNovosti();
+            }
+            else
+            {
+                stat = new StatistikaNovosti
+                {
+                    Id = vestID,
+                    IdKorisnikaKojiLajkuju = new List<int>(),
+                    IdKorisnikaKojiDislajkuju = new List<int>()
+                };
+            }
+
+            stat.IdKorisnikaKojiLajkuju ??= new List<int>();
+            stat.IdKorisnikaKojiDislajkuju ??= new List<int>();
+
+            // (2) toggle + uklanjanje iz suprotne liste
+            if (lajk)
+            {
+                stat.IdKorisnikaKojiDislajkuju.Remove(korisnikID);
+
+                if (stat.IdKorisnikaKojiLajkuju.Contains(korisnikID))
+                    stat.IdKorisnikaKojiLajkuju.Remove(korisnikID); // toggle off
+                else
+                    stat.IdKorisnikaKojiLajkuju.Add(korisnikID);
+            }
+            else
+            {
+                stat.IdKorisnikaKojiLajkuju.Remove(korisnikID);
+
+                if (stat.IdKorisnikaKojiDislajkuju.Contains(korisnikID))
+                    stat.IdKorisnikaKojiDislajkuju.Remove(korisnikID); // toggle off
+                else
+                    stat.IdKorisnikaKojiDislajkuju.Add(korisnikID);
+            }
+
+            // (3) upis kroz transakciju
+            var json = JsonConvert.SerializeObject(stat);
+            _ = tran.StringSetAsync(key, json);
+
+            bool ok = await tran.ExecuteAsync();
+            if (ok)
+            {
+                var novost=await _context.Set<Novosti>().FirstOrDefaultAsync(n => n.Id == vestID);
+                novost.BrojDislajkova = stat.IdKorisnikaKojiDislajkuju.Count;
+                novost.BrojLajkova = stat.IdKorisnikaKojiLajkuju.Count;
+                
+                await _context.SaveChangesAsync();
+                return new ReactionResult
+                {
+                    VestId = vestID,
+                    Likes = stat.IdKorisnikaKojiLajkuju.Count,
+                    Dislikes = stat.IdKorisnikaKojiDislajkuju.Count,
+                
+                    LikedByMe = stat.IdKorisnikaKojiLajkuju.Contains(korisnikID),
+                    DislikedByMe = stat.IdKorisnikaKojiDislajkuju.Contains(korisnikID),
+                };
+            }
+
+            
         }
 
-        
+        throw new Exception("Previše paralelnih izmena, pokušaj ponovo.");
     }
-
-    throw new Exception("Previše paralelnih izmena, pokušaj ponovo.");
-}
+        public async Task<UcinakObeStrane> VratiUcinakIgracaKlubaZaUtakmicuAsync(int utakmicaID,SportType sport)
+        {
+            var postojiUtakmica = await _context.Set<Utakmica>()
+            .Where(x => x.Id == utakmicaID)
+            .FirstOrDefaultAsync();
+            if(postojiUtakmica == null)
+                throw new Exception("Prosledjena utakmica nije pronadjena u bazi");
+            var postojiDomacin = await _context.Set<Klub>().Include(x => x.Igraci)
+            .Where(x => x.Naziv == postojiUtakmica.Domacin && x.Sport == sport)
+            .FirstOrDefaultAsync();
+            if(postojiDomacin == null)
+                throw new Exception("Klub koji je domacin utakmice ne postoji u bazi");
+            var postojiGost = await _context.Set<Klub>().Include(x => x.Igraci)
+            .Where(x => x.Naziv == postojiUtakmica.Gost && x.Sport == sport)
+            .FirstOrDefaultAsync();
+            if(postojiGost == null)
+                throw new Exception("Klub koji je gost utakmice ne postoji u bazi");
+            string statKeyDom = $"stat:{utakmicaID}:{postojiDomacin.Naziv}:{(int)sport}";
+            bool vecPostojiDom = await _db.KeyExistsAsync(statKeyDom);
+            if(!vecPostojiDom)
+            {
+                foreach(var igrac in postojiDomacin.Igraci)
+                {
+                    var UcinakIgracaNaUtakmici = new UcinakIgracaNaUtakmici
+                    {
+                        IgraUtakmicu = false,
+                        Pogotci = 0,
+                        Asistencije = 0,
+                        UkupnoSuteva = 0,
+                        IndeksKorisnosti = 0,
+                        IzgubljeneLopte = sport != SportType.Fudbal ? 0 : null,
+                        UkradeneLopte = sport == SportType.Kosarka ? 0 : null,
+                        BlokiraniUdarci = 0,
+                        VraceniPosedi =  sport != SportType.Kosarka ? 0 : null,
+                        UkupnoDodavanja = sport == SportType.Fudbal ? 0 : null,
+                        UkupnoTacnihDodavanja = sport == SportType.Fudbal ? 0 : null,
+                        PredjenaDistancaKM = sport == SportType.Fudbal ? 0 : null,
+                        Skokovi = sport == SportType.Kosarka ? 0 : null,
+                        SkokoviOF =  sport == SportType.Kosarka ? 0 : null,
+                        SkokoviDF =  sport == SportType.Kosarka ? 0 : null,
+                        Iskljucenja =  sport == SportType.Vaterpolo ? 0 : null,
+                        UkupnoFaula = 0,
+                        CrveniKartoni = sport == SportType.Fudbal ? false : null,
+                        ZutiKartoni = sport == SportType.Fudbal ? false : null,
+                        ImePrezime = $"{igrac.Ime} {igrac.Prezime}",
+                        IgracId = igrac.Id,
+                    };    
+                    var json = JsonConvert.SerializeObject(UcinakIgracaNaUtakmici);
+                    await _db.ListRightPushAsync(statKeyDom, json);
+                }
+                
+            }
+            string statKeyGos = $"stat:{utakmicaID}:{postojiGost.Naziv}:{(int)sport}";
+            bool vecPostojiGos = await _db.KeyExistsAsync(statKeyGos);
+            if(!vecPostojiGos)
+            {
+                foreach(var igrac in postojiGost.Igraci)
+                {
+                    var UcinakIgracaNaUtakmici = new UcinakIgracaNaUtakmici
+                    {
+                        IgraUtakmicu = false,
+                        Pogotci = 0,
+                        Asistencije = 0,
+                        UkupnoSuteva = 0,
+                        IndeksKorisnosti = 0,
+                        IzgubljeneLopte = sport != SportType.Fudbal ? 0 : null,
+                        UkradeneLopte = sport == SportType.Kosarka ? 0 : null,
+                        BlokiraniUdarci = 0,
+                        VraceniPosedi =  sport != SportType.Kosarka ? 0 : null,
+                        UkupnoDodavanja = sport == SportType.Fudbal ? 0 : null,
+                        UkupnoTacnihDodavanja = sport == SportType.Fudbal ? 0 : null,
+                        PredjenaDistancaKM = sport == SportType.Fudbal ? 0 : null,
+                        Skokovi = sport == SportType.Kosarka ? 0 : null,
+                        SkokoviOF =  sport == SportType.Kosarka ? 0 : null,
+                        SkokoviDF =  sport == SportType.Kosarka ? 0 : null,
+                        Iskljucenja =  sport == SportType.Vaterpolo ? 0 : null,
+                        UkupnoFaula = 0,
+                        CrveniKartoni = sport == SportType.Fudbal ? false : null,
+                        ZutiKartoni = sport == SportType.Fudbal ? false : null,
+                        ImePrezime = $"{igrac.Ime} {igrac.Prezime}",
+                        IgracId = igrac.Id,
+                    };    
+                    var json = JsonConvert.SerializeObject(UcinakIgracaNaUtakmici);
+                    await _db.ListRightPushAsync(statKeyGos, json);
+                }
+                
+            }
+            var ucinakObeStrane = new UcinakObeStrane();
+            var rezultatiDomRaw = await _db.ListRangeAsync(statKeyDom, 0, -1);
+            var rezultatiGosRaw = await _db.ListRangeAsync(statKeyGos, 0, -1);
+            ucinakObeStrane.Domacin = rezultatiDomRaw
+                .Select(item => item.HasValue ? JsonConvert.DeserializeObject<UcinakIgracaNaUtakmici>(item.ToString()!) : null)
+                .Where(x => x != null)
+                .Cast<UcinakIgracaNaUtakmici>()
+                .ToList();
+            ucinakObeStrane.Gost = rezultatiGosRaw
+                .Select(item => item.HasValue ? JsonConvert.DeserializeObject<UcinakIgracaNaUtakmici>(item.ToString()!) : null)
+                .Where(x => x != null)
+                .Cast<UcinakIgracaNaUtakmici>()
+                .ToList();
+            return ucinakObeStrane;
+            
+        }
+        public async Task<int> VratiMinutUtakmiceAsync(int utakmicaID)
+        {
+            var utakmica = await _context.Set<Utakmica>()
+            .Include(x => x.Statistika)
+            .Where(x=> x.Id == utakmicaID)
+            .FirstOrDefaultAsync();
+            if(utakmica == null)
+                throw new Exception("Prosledjena utakmica ne postoji u bazi");
+            return utakmica.Statistika.TrenutniMinut;
+        }
 }
 
 

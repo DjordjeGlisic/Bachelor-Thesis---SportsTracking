@@ -7,7 +7,7 @@ namespace Models
         public int GoloviGost { get; set; }
        
         public int SutDomacin { get; set; }
-            public int SutGost { get; set; }
+        public int SutGost { get; set; }
         public int SutKaGolDomacin { get; set; }
         public int SutKaGolGost { get; set; }
 

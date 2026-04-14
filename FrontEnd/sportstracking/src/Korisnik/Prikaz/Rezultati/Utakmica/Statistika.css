@@ -15,10 +15,11 @@
 /* header */
 
 .team-stats-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrira sve u odnosu na labelu */
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .ts-logo {
@@ -28,11 +29,9 @@
 }
 
 .ts-title {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #e5e5e5;
+    width: 180px; /* MORA BITI ISTA ŠIRINA KAO .ts-label */
+    text-align: center;
+    font-weight: bold;
 }
 
 /* telo tabele */
@@ -44,11 +43,11 @@
 }
 
 .ts-row {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr 1fr;
-  align-items: center;
-  font-size: 13px;
-  padding: 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Menjamo u center da bi fiksne širine radile posao */
+    width: 100%;
+    padding: 8px 0;
 }
 
 .ts-label {
@@ -62,13 +61,18 @@
 }
 
 .ts-value-left {
-  justify-content: flex-start;
+    width: 120px;       /* FIKSNA ŠIRINA */
+    display: flex;
+    justify-content: flex-end; /* Gura sadržaj ka labeli (udesno) */
+    align-items: center;
 }
 
 .ts-value-right {
-  justify-content: flex-end;
+    width: 120px;       /* FIKSNA ŠIRINA */
+    display: flex;
+    justify-content: flex-start; /* Gura sadržaj ka labeli (ulevo) */
+    align-items: center;
 }
-
 /* crvene "pilule" sa brojevima */
 
 .ts-pill-more {
@@ -133,4 +137,43 @@
     padding: 3px 8px;
     font-size: 12px;
   }
+}
+
+
+/* Kontejner koji drži dugmiće i broj */
+.stat-controls-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+/* Dugmići */
+.btn-stat {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    flex-shrink: 0; /* Sprečava dugme da se smanji */
+}
+
+/* Prazan prostor koji zauzima isto mesta kao dugme da bi redovi bez dugmića ostali u liniji */
+.btn-placeholder {
+    width: 24px; /* Ista širina kao i tvoj button */
+}
+/* Glavni redovi */
+.ts-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ts-label {
+    width: 180px;       /* FIKSNA ŠIRINA ZA LABELU */
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+}
+.ts-value {
+    width: 120px; /* Mora biti ista kao min-width wrappera */
+    display: flex;
+    justify-content: center;
 }

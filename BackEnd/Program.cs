@@ -17,6 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<Services.IKorisnikService, Services.KorisnikService>();
 builder.Services.AddScoped<Services.IKlubService, Services.KlubService>();
+builder.Services.AddScoped<Services.IAdminService,Services.AdminService>();
 builder.Services.AddCors(options=>
 {
     options.AddPolicy("CORS",builder=>
@@ -47,6 +48,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("CORS");
 app.UseWebSockets();
 app.MapHub<ChatHub>("/ChatHub");
+app.MapHub<MatchHub>("/MatchHub");
 app.UseHttpsRedirection();
 app.MapControllers();
 

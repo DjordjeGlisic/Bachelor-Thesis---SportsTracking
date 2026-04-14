@@ -77,6 +77,9 @@ export default function Navbar({ onOpenLogin }) {
         )}
         <li className={ruta === "./Takmicenja" ? "nav-item active" : "nav-item"} onClick={()=>{setActiveOption(1);setRuta("./Takmicenja");navigate("./Takmicenja");localStorage.removeItem("izabraniKlub");setIzabraniKlub(null);}}>Takmičenja</li>
         <li className={ruta === "./Klubovi"|| ruta === "./Klub" ? "nav-item active" : "nav-item"} onClick={()=>{setActiveOption(2);setRuta("./Klubovi");navigate("./Klubovi");localStorage.removeItem("izabraniKlub");setIzabraniKlub(null);}}>Klubovi</li>
+         {(korisnik && (korisnik.isAdmin)) &&(
+        <li className={ruta === "./Transferi" ? "nav-item active" : "nav-item"} onClick={()=>{setActiveOption(4);localStorage.removeItem("izabraniKlub");setIzabraniKlub(null);setRuta("./Transferi");navigate("./Transferi")}}>Transferi</li>
+        )}
       </ul>
 
       {/* RIGHT */}
