@@ -93,6 +93,7 @@ const handleNewStat = (x) => {
                 console.log(response.data.value);
                 setMatches(response.data.value);
                 let t = tipKola(response.data.value.tip);
+                console.log(response.data.value.tip);
                 setLabelKolo( t);
                 const niz=[];
                 

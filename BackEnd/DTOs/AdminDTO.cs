@@ -100,6 +100,8 @@ public class NovaUtakmicaDTO
 {
      public int Id{get;set;}
      public string Domacin{get;set;}
+     public string? DomacinLogo{get;set;}
+    public string? GostLogo{get;set;}
      public string Gost{get;set;}
      public DateTime Datum{get;set;}
      public bool Uzivo{get;set;}

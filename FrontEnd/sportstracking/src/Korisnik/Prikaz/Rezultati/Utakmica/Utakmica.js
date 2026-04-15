@@ -366,25 +366,27 @@ if (!utakmica) return null;
 
       {/* rezultat */}
       <div className="match-score-row">
-        <Button className="match-team match-team-left" onClick={()=>{klubHandler(utakmica.domacin)}}>
-          <Avatar>
-            {utakmica.domacin.slice(0, 3).toUpperCase()}
-          </Avatar>
+        <div className="match-team match-team-left">
+         <img
+            className="klub-logo"
+            src={utakmica.domacinLogo}
+            onClick={() => { klubHandler(utakmica.domacin) }}
+          />
           <span className="team-name">{utakmica.domacin}</span>
-        </Button>
-
+        </div>
         <div className="match-score">
           <span className="score-number">{homeScore}</span>
           <span className="score-separator">-</span>
           <span className="score-number">{awayScore}</span>
         </div>
-
-        <Button className="match-team match-team-right" onClick={()=>{klubHandler(utakmica.gost)}}>
-          <Avatar className="team-logo">
-            {utakmica.gost.slice(0, 3).toUpperCase()}
-          </Avatar>
-          <span className="team-name" >{utakmica.gost}</span>
-        </Button>
+        <div className="match-team match-team-right">
+         <img
+            className="klub-logo"
+            src={utakmica.gostLogo}
+            onClick={() => { klubHandler(utakmica.gost) }}
+          />
+          <span className="team-name">{utakmica.gost}</span>
+        </div>
       </div>
 
       {/* strelci – samo ako sport !== 2 */}

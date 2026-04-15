@@ -162,7 +162,6 @@ namespace Services
                         await _context.Set<Tabela>().AddAsync(tabela);
                         await _context.SaveChangesAsync();
                         ucinak.IdUcinka = tabela.Id;
-                        postoji.Takmicenja.Add(tabela);
                     } 
                     
                 }
@@ -394,7 +393,6 @@ namespace Services
                         tabela.Takmicenje = novoTakmicenje;
                         tabela.TakmicenjeId = novoTakmicenje.Id;
                         await _context.Set<Tabela>().AddAsync(tabela);
-                        await _context.SaveChangesAsync();
                         foreach(var igrac in trenutniKlub.Igraci)
                         {
                             var ucinakIgraca = new Ucinak
@@ -426,7 +424,9 @@ namespace Services
                             ucinakIgraca.TakmicenjeId = novoTakmicenje.Id;
                             ucinakIgraca.Igrac = igrac;
                             ucinakIgraca.IgracId = igrac.Id;
+                            await _context.Set<Ucinak>().AddAsync(ucinakIgraca);
                         }
+                        await _context.SaveChangesAsync();
                     }
                 }
             }
@@ -548,11 +548,12 @@ namespace Services
             {
                 Sezona = $"{trenutnaGodina-1}/{trenutnaGodina}";
             }
+            var osnova = takmicenje.Kolа.Where(x => x.TipKola < tip).ToList().Count;
              for(int i = brojPrvogKola; i<=brojPoslednjegKola;i++)
             {
                 var kolo = new Kolo
                 {
-                    BrojKola = i,
+                    BrojKola = i + osnova,
                     PocetakKola = null,
                     KrajKola = null,
                     TipKola = tip,
@@ -562,7 +563,6 @@ namespace Services
                     Utakmice = new List<Utakmica>()
                 };
                 await _context.Set<Kolo>().AddAsync(kolo);
-                takmicenje.Kolа.Add(kolo);
             }
             var ostatkKolaTakmicenja =  takmicenje.Kolа.Where(x => x.TipKola > tip).ToList();
             int brojNovih = brojPoslednjegKola - brojPrvogKola  + 1;
@@ -582,6 +582,7 @@ namespace Services
                     kolo.BrojKola -= razlika;
                 }
             }
+            await _context.SaveChangesAsync();
            
         } 
         private async Task ObrisiKola(Takmicenje takmicenje,KoloType tip,int prvoKoloZaBrisanje, int poslednjeZaBrisanje)
@@ -775,6 +776,7 @@ namespace Services
                 };
                 _context.Set<Tabela>().Add(entitetZaDodavanje);
             } 
+            await _context.SaveChangesAsync();
             var kola = postoji.Kolа.ToList();
             var brojRegularnih = kola.Where(x=> x.TipKola == KoloType.Regularno).ToList().Count;
             var broj128 = kola.Where(x=> x.TipKola == KoloType.RoundOf128).ToList().Count;
@@ -996,10 +998,18 @@ namespace Services
                 kolo.PocetakKola =fixedDatum;
             if(kolo.KrajKola == null || kolo.KrajKola < fixedDatum)
                 kolo.KrajKola = fixedDatum;
+            var  sport = novaUtakmica.Sport == 1 ? SportType.Fudbal : novaUtakmica.Sport == 2 ? SportType.Kosarka : SportType.Vaterpolo;
+            var klubovi = await _context.Set<Klub>()
+            .Where(x => x.Sport == sport && (x.Naziv == novaUtakmica.Domacin || x.Naziv == novaUtakmica.Gost ))
+            .ToListAsync();
+            if(klubovi.Count != 2)
+                throw new Exception("Domacin ili gost nisu pronadjeni");
             var utakmica = new Utakmica
             {
                 Uzivo = false,
                 Domacin = novaUtakmica.Domacin,
+                DomacinLogo = klubovi.Where(x => x.Naziv == novaUtakmica.Domacin).Select(x => x.LogoURL).First(),
+                GostLogo = klubovi.Where(x => x.Naziv == novaUtakmica.Gost).Select(x => x.LogoURL).First(),
                 Gost = novaUtakmica.Gost,
                 Lokacija = novaUtakmica.Lokacija,
                 DatumPocetkaUtakmice = fixedDatum,
@@ -1009,7 +1019,7 @@ namespace Services
             utakmica.Kolo = kolo;
             utakmica.KoloId = kolo.Id;
             Statistika statistika;
-            var  sport = novaUtakmica.Sport == 1 ? SportType.Fudbal : novaUtakmica.Sport == 2 ? SportType.Kosarka : SportType.Vaterpolo;
+        
             switch(sport)
             {
                 case SportType.Fudbal:
@@ -1096,6 +1106,8 @@ namespace Services
             {
                 Id = utakmica.Id,
                 Domacin = utakmica.Domacin,
+                DomacinLogo = utakmica.DomacinLogo,
+                GostLogo = utakmica.GostLogo,
                 Gost = utakmica.Gost,
                 Datum = utakmica.DatumPocetkaUtakmice,
                 Uzivo = utakmica.Uzivo,

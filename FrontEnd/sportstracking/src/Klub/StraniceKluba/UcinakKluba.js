@@ -117,13 +117,13 @@ export default function UcinakKluba() {
 
   // status meca
  
-  const statusLabel = (m) => {
-    if (m?.uzivo) return { text: "Uživo", cls: "live" };
-  const now= new Date();
-  const utakmica=new Date(m.datumPocetkaUtakmice);
-    if (utakmica<now) return { text: "Odigrano", cls: "ft" };
-    return { text: "Predstoji", cls: "upcoming" };
-  };
+  // const statusLabel = (m) => {
+  //   if (m?.uzivo) return { text: "Uživo", cls: "live" };
+  // const now= new Date();
+  // const utakmica=new Date(m.datumPocetkaUtakmice);
+  //   if (utakmica<now) return { text: "Odigrano", cls: "ft" };
+  //   return { text: "Predstoji", cls: "upcoming" };
+  // };
 const [sezone,setSezone]=useState("2025/2026");
 const [tabela,setTabela]=useState(null);
 function vratiPoslednjihNSezona(n = 5) {
@@ -214,14 +214,14 @@ useEffect(()=>{
                 {visible.map((m) => {
                   
                   console.log(m);
-                  const st = statusLabel(m);
+                  const st = m.status === "TRENUTNI MINUT" ? "U TOKU" : m.status;
                   const isMeHome = m.domacin === aktivniKlub?.naziv;
                   const isMeAway = m.gost === aktivniKlub?.naziv;
 
                   return (
                     <div className="kmks-matchCard" key={m.id} onClick={()=>{console.log(m);}}>
                       <div className="kmks-matchMeta">
-                        <span className={`kmks-status ${st.cls}`}>{st.text}</span>
+                        <span className={`kmks-status ${st.cls}`}>{st}</span>
                         <span className="kmks-date">{formatDateTime(m.datumPocetkaUtakmice)}</span>
                       </div>
 

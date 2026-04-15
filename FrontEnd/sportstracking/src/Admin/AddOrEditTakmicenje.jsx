@@ -96,7 +96,7 @@ const handleAddSekcija = () => {
           {
             nazivTabele: '',
             klubovi : [],
-            sezona: '',
+            sezona: vratiTrenutnuSezonu(),
         }
         );
 
@@ -133,7 +133,7 @@ const promenaSekcijehandler = () =>{
         {
           nazivTabele: '',
           klubovi : [],
-          sezona: '',
+          sezona: vratiTrenutnuSezonu(),
       }
       );
 
@@ -148,7 +148,7 @@ const handleDeleteSekcija = () => {
       {
         nazivTabele: '',
         klubovi : [],
-        sezona: '',
+        sezona: vratiTrenutnuSezonu()
     }
     );
 
@@ -482,7 +482,7 @@ const handleDeleteSekcija = () => {
                 {
                   nazivTabele: '',
                   klubovi : [],
-                  sezona: '',
+                  sezona: vratiTrenutnuSezonu()
               }
               );
             }}

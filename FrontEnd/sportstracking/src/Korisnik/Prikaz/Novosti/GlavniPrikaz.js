@@ -59,14 +59,14 @@ const GlavniPrikaz = () => {
 
       const { gd, gg } = parseRezultat(m.rezultat);
 
-      let status = "";
-      if (tabKey === "trenutno") {
-        status = m.uzivo ? `${m.minut ?? ""}'` : "U TOKU";
-      } else if (tabKey === "proslo") {
-        status = "KR";
-      } else {
-        status = ""; // sledece
-      }
+      // let status = "";
+      // if (tabKey === "trenutno") {
+      //   status = m.uzivo ? `${m.minut ?? ""}'` : "U TOKU";
+      // } else if (tabKey === "proslo") {
+      //   status = "KR";
+      // } else {
+      //   status = ""; // sledece
+      // }
 
       rows.push({
         id: m.id,
@@ -75,7 +75,7 @@ const GlavniPrikaz = () => {
         gost: m.gost,
         goloviDomacin: gd,
         goloviGost: gg,
-        status,
+        status : m.status,
         datum: formatDatum(m.datum),
         raw: m,           
       });

@@ -11,10 +11,12 @@ namespace Controllers
     public class AdminController: ControllerBase
     {
         private readonly IAdminService _adminService;
+          private readonly ApplicationDbContext _context;
 
         public AdminController(IAdminService adminService, ApplicationDbContext context)
         {
             _adminService = adminService;
+            _context = context;
         }
         [HttpGet]
         [Route("VratiTakmicenjaSportaSaUcincima/{sport}")]
@@ -291,6 +293,7 @@ namespace Controllers
                 return BadRequest(ex.Message);
             }
         }
+      
         
     }
 }

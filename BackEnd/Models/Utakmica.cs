@@ -14,8 +14,10 @@ namespace Models
         [Required]
         
         public string Domacin { get; set; }
+        public string? DomacinLogo{get;set;}
         [Required]
         public string Gost { get; set; }
+        public string? GostLogo{get;set;}
         [Required]
         public string Lokacija { get; set; }
         [Required]
